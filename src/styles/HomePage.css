@@ -1,0 +1,25 @@
+.home-page {
+    display: grid;
+    grid-template-rows: 7fr 3fr; /* 7 parts for status-container, 3 parts for action-box */
+    height: 100vh; /* Adjust height as needed */
+}
+
+.status-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.status-container > div {
+    width: 200px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

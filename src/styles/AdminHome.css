@@ -1,0 +1,5 @@
+.adm-page {
+    display: grid;
+    grid-template-rows: 15% 85%;
+    height: 100vh;
+}
