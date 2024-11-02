@@ -39,7 +39,11 @@ const UserOptions = () => {
 }
 
 const StyledWrapper = styled.div`
-  /* The design is inspired from Galahhad*/
+  /* The design is inspired from Galahhad */
+
+  a {
+    text-decoration: none;
+  }
 
   .popup {
     --burger-line-width: 1.125em;
@@ -69,10 +73,8 @@ const StyledWrapper = styled.div`
     --nav-font-family: "Poppins", sans-serif;
     --nav-default-scale: 0.8;
     --nav-active-scale: 1;
-    --nav-position-left: 0;
-    --nav-position-right: unset;
-    /* if you want to change sides just switch one property */
-    /* from properties to "unset" and the other to 0 */
+    --nav-position-left: unset;
+    --nav-position-right: 0; /* Dropdown appears to the left */
     /* title */
     --nav-title-size: 0.625em;
     --nav-title-color: #777;
@@ -137,7 +139,6 @@ const StyledWrapper = styled.div`
       var(--burger-diameter) + var(--burger-enable-outline-width) +
         var(--burger-enable-outline-offset)
     );
-    left: var(--nav-position-left);
     right: var(--nav-position-right);
     transition: var(--burger-transition);
     margin-top: 10px;
@@ -237,6 +238,8 @@ const StyledWrapper = styled.div`
     transform: scale(var(--nav-active-scale));
     visibility: visible;
     opacity: 1;
-  }`;
+  }
+`;
+
 
 export default UserOptions;
