@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import "../styles/NavBar.css";
+import '../styles/NavBar.css';
 import { UsersRound, TicketCheck, NotebookPen, LibraryBig } from 'lucide-react';
 import styled from 'styled-components';
 
@@ -9,22 +8,22 @@ const NavBar = () => {
   return (
     <StyledWrapper>
       <div className="button-container">
-        <Link to='/emp' className='button' title='Employees'>
+        <Link to="/admin/employee" className="button" title="Employees">
           <UsersRound />
         </Link>
-        <Link to='/val' className="button" title='Validity'>
+        <Link to="/admin/validity" className="button" title="Validity">
           <TicketCheck />
         </Link>
-        <Link to='/iss' className="button" title='Issue'>
-            <NotebookPen />
+        <Link to="/admin/issue" className="button" title="Issue">
+          <NotebookPen />
         </Link>
-        <Link to='/rec' className="button" title='Records'>
-            <LibraryBig />
+        <Link to="/admin/record" className="button" title="Records">
+          <LibraryBig />
         </Link>
       </div>
     </StyledWrapper>
   );
-}
+};
 
 const StyledWrapper = styled.div`
   .button-container {
@@ -35,7 +34,8 @@ const StyledWrapper = styled.div`
     align-items: center;
     justify-content: space-around;
     border-radius: 10px;
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px,
+    box-shadow:
+      rgba(0, 0, 0, 0.35) 0px 5px 15px,
       rgba(27, 133, 219, 0.5) 5px 10px 15px;
   }
 

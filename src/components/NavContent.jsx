@@ -1,22 +1,29 @@
-import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import "../styles/NavContent.css";
+import EmployeeContent from './EmployeeContent';
+import IssueContent from './IssueContent';
+import RecordsContent from './RecordsContent';
+import ValidityContent from './ValidityContent';
 
 const NavContent = (props) => {
-    return (
-        <div className="nav-content">
-            {
-                (props.viewContent === "employee") ? (
-                    "this is for employee"
-                ) : (props.viewContent === "validity") ? (
-                    "this is for validity"
-                ) : (props.viewContent === "issue") ? (
-                    "this is for issue"
-                ) : (props.viewContent === "logrecord") ? (
-                    "this is for log record"
-                ) : null
-            }
-        </div>
-    );
+  return (
+    <div
+      className="nav-content p-4"
+      style={{
+        backgroundColor: '#373737',
+        color: 'whitesmoke',
+        border: '11px solid #212529',
+      }}
+    >
+      {props.viewContent === 'employee' ? (
+        <EmployeeContent />
+      ) : props.viewContent === 'validity' ? (
+        <ValidityContent />
+      ) : props.viewContent === 'issue' ? (
+        <IssueContent />
+      ) : props.viewContent === 'logrecord' ? (
+        <RecordsContent />
+      ) : null}
+    </div>
+  );
 };
 
 export default NavContent;

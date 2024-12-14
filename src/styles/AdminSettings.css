@@ -1,5 +1,5 @@
-body {
-    height: 100vh;
+.admin-settings {
     width: 100vw;
+    height: 100vh;
     overflow: hidden;
 }

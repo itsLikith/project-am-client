@@ -1,25 +1,49 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LoginPage from "../pages/LoginPage";
-import HomePage from "../pages/HomePage";
-import AdminHome from "../pages/AdminHome";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import LoginPage from '../pages/LoginPage';
+import HomePage from '../pages/SecurityHomePage';
+import AdminHome from '../pages/AdminHome';
+import AdminSettings from '../pages/AdminSettingsPage';
 
 const AppRoutes = () => {
-    return (
-        <Router>
-            <Routes>
-                <Route path="/" element={<LoginPage userType="security" />} />
-                <Route path="/login" element={<LoginPage userType="security" />} />
-                <Route path="/admin" element={<LoginPage userType="admin" />} />
-                <Route path="/home" element={<HomePage />} />
-                <Route path="/adminHome" element={<AdminHome />} />
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<LoginPage userType="security" />} />
+        <Route
+          path="/security/login"
+          element={<LoginPage userType="security" />}
+        />
+        <Route path="/admin/login" element={<LoginPage userType="admin" />} />
+        <Route path="/security/home" element={<HomePage />} />
+        <Route path="/admin/home" element={<AdminHome />} />
 
-                <Route path="/emp" element={<AdminHome viewContent="employee" />} />
-                <Route path="/val" element={<AdminHome viewContent="validity" />} />
-                <Route path="/iss" element={<AdminHome viewContent="issue" />} />
-                <Route path="/rec" element={<AdminHome viewContent="logrecord" />} />
-            </Routes>
-        </Router>
-    )
-}
+        <Route
+          path="/admin/employee"
+          element={<AdminHome viewContent="employee" />}
+        />
+        <Route
+          path="/admin/validity"
+          element={<AdminHome viewContent="validity" />}
+        />
+        <Route
+          path="/admin/issue"
+          element={<AdminHome viewContent="issue" />}
+        />
+        <Route
+          path="/admin/record"
+          element={<AdminHome viewContent="logrecord" />}
+        />
+        <Route
+          path="/admin/home/issue/aep"
+          element={<AdminHome viewContent="issue" selected="aep" />}
+        />
+        <Route
+          path='/admin/settings'
+          element={<AdminSettings />}
+        />
+      </Routes>
+    </Router>
+  );
+};
 
 export default AppRoutes;
