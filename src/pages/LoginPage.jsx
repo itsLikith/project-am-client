@@ -59,7 +59,7 @@ const LoginPage = (props) => {
     <div className="login-page bg-dark text-light">
       <form className="border border-2 p-4" onSubmit={handleLoginButton}>
         {props.userType === 'security' ? (
-          <p className="h6 text-center m-4">Security Personnel Login</p>
+          <p className="h6 text-center m-4">Login</p>
         ) : props.userType === 'admin' ? (
           <p className="h6 text-center m-4">Admin Login</p>
         ) : null}
