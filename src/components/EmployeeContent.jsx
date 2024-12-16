@@ -1,6 +1,8 @@
 import { Search } from 'lucide-react';
+import { useState } from 'react';
 
 const EmployeeContent = () => {
+  const employees = useState({});
   return (
     <div className="employee-content">
       <p className="d-block justify-content-between">

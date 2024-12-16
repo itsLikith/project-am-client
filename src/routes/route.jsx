@@ -46,6 +46,30 @@ const AppRoutes = () => {
           element={<AdminHome viewContent="issue" selected="adp" />}
         />
         <Route path="/admin/settings" element={<AdminSettings />} />
+        <Route
+          path="/admin/settings/authorize/renew"
+          element={<AdminSettings selected="authorize" task="renew" />}
+        />
+        <Route
+          path="/admin/settings/authorize/block"
+          element={<AdminSettings selected="authorize" task="block" />}
+        />
+        <Route
+          path="/admin/settings/authorize/"
+          element={<AdminSettings selected="" task="" />}
+        />
+        <Route
+          path="/admin/settings/generateQR/aep"
+          element={<AdminSettings selected="generateQR" task="aep" />}
+        />
+        <Route
+          path="/admin/settings/generateQR/avp"
+          element={<AdminSettings selected="generateQR" task="avp" />}
+        />
+        <Route
+          path="/admin/settings/generateQR/adp"
+          element={<AdminSettings selected="generateQR" task="adp" />}
+        />
       </Routes>
     </Router>
   );

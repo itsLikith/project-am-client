@@ -2,6 +2,7 @@ import '../styles/LoginPage.css';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const LoginPage = (props) => {
   const navigate = useNavigate();
@@ -20,15 +21,31 @@ const LoginPage = (props) => {
     setLoading(true);
 
     try {
+      const packet = {
+        employeeId: username,
+        password: password,
+      };
+      console.log(packet);
       const response = await axios.post(
         'https://accessmatrix.vercel.app/api/users/login',
-        { username, password }
+        packet
       );
-      console.log(response.data);
-      if (response.data.success) {
-        navigate('/home');
+      const accessToken = response.data.data.accessToken;
+      const refreshToken = response.data.data.refreshToken;
+      Cookies.set('accessToken', accessToken);
+      Cookies.set('refreshToken', refreshToken);
+      if (
+        response.data.success &&
+        response.data.data.user.role === 'Security'
+      ) {
+        navigate('/security/home');
+      } else if (
+        response.data.success &&
+        response.data.data.user.role === 'Admin'
+      ) {
+        navigate('/admin/home');
       } else {
-        setMessage('Invalid credentials');
+        setMessage('Invalid Credentials');
       }
     } catch (error) {
       console.error('Login error:', error);

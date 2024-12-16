@@ -7,7 +7,10 @@ const SettingsRadio = (props) => {
       <div className="input">
         {props.selected === 'generateQR' && (
           <>
-            <Link to="" className="text-decoration-none">
+            <Link
+              to="/admin/settings/generateQR/aep"
+              className="text-decoration-none"
+            >
               <button className="value d-flex align-items-center">
                 <svg
                   viewBox="0 0 16 16"
@@ -23,7 +26,10 @@ const SettingsRadio = (props) => {
               </button>
             </Link>
 
-            <Link to="" className="text-decoration-none">
+            <Link
+              to="/admin/settings/generateQR/avp"
+              className="text-decoration-none"
+            >
               <button className="value d-flex align-items-center">
                 <svg
                   id="Line"
@@ -45,7 +51,10 @@ const SettingsRadio = (props) => {
               </button>
             </Link>
 
-            <Link to="" className="text-decoration-none">
+            <Link
+              to="/admin/settings/generateQR/adp"
+              className="text-decoration-none"
+            >
               <button className="value d-flex align-items-center">
                 <svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -59,9 +68,12 @@ const SettingsRadio = (props) => {
           </>
         )}
 
-        {props.selected === 'authorise' && (
+        {props.selected === 'authorize' && (
           <>
-            <Link to="" className="text-decoration-none">
+            <Link
+              to="/admin/settings/authorize/renew"
+              className="text-decoration-none"
+            >
               <button className="value d-flex align-items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -83,7 +95,10 @@ const SettingsRadio = (props) => {
               </button>
             </Link>
 
-            <Link to="" className="text-decoration-none">
+            <Link
+              to="/admin/settings/authorize/block"
+              className="text-decoration-none"
+            >
               <button className="value d-flex align-items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -106,8 +121,6 @@ const SettingsRadio = (props) => {
             </Link>
           </>
         )}
-
-        {/* Remove unnecessary condition */}
       </div>
     </StyledWrapper>
   );
