@@ -5,6 +5,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  background: fixed no-repeat url('../assets/images/LoginBackground.png');
+  background-position: bottom;
+  background-size: cover;
 }
 
 form {

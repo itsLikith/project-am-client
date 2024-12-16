@@ -3,6 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import SettingsRadio from '../components/SettingsRadio';
 import '../styles/AdminSettings.css';
 import { ArrowBigLeft } from 'lucide-react';
+import RenewContent from '../components/RenewContent';
+import BlockContent from '../components/BlockContent';
+import GenerateQrAEP from '../components/GenerateQRaep';
+import GenerateQrAVP from '../components/GenerateQRavp';
 
 const AdminSettings = (props) => {
   const navigate = useNavigate();
@@ -48,18 +52,22 @@ const AdminSettings = (props) => {
       {props.selected === 'authorize' && props.task === 'renew' ? (
         <>
           <p className="h6 text-info">Renew</p>
+          <RenewContent />
         </>
       ) : props.selected === 'authorize' && props.task === 'block' ? (
         <>
           <p className="h6 text-info">Block</p>
+          <BlockContent />
         </>
       ) : props.selected === 'generateQR' && props.task === 'aep' ? (
         <>
-          <p className="h6 text-info">Generate QR for AEP</p>
+          <p className="h6 text-info">Generate QR for AEP/ADP</p>
+          <GenerateQrAEP />
         </>
       ) : props.selected === 'generateQR' && props.task === 'avp' ? (
         <>
           <p className="h6 text-info">Generate QR for AVP</p>
+          <GenerateQrAVP />
         </>
       ) : props.selected === 'generateQR' && props.task === 'adp' ? (
         <>

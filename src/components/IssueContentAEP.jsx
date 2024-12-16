@@ -69,10 +69,10 @@ const IssueContentAEP = (props) => {
     <div>
       {props.selected === 'aep' ? (
         <>
-          <span className="h6 text-info">This is for AEP Issue</span>
+          <span className="h6 text-info">Issue AEP</span>
           <form onSubmit={handleSubmit} className="container-fluid p-4">
             <div className="row">
-              <div className="col-md-4 mb-3">
+              <div className="col-md-6 mb-3">
                 <input
                   type="text"
                   className="form-control"
@@ -82,7 +82,7 @@ const IssueContentAEP = (props) => {
                   onChange={handleChange}
                 />
               </div>
-              <div className="col-md-4 mb-3">
+              <div className="col-md-6 mb-3">
                 <input
                   type="text"
                   className="form-control"
@@ -120,7 +120,9 @@ const IssueContentAEP = (props) => {
                   required
                   onChange={handleChange}
                 >
-                  <option value="">Select Location</option>
+                  <option value="" selected disabled>
+                    Select Location
+                  </option>
                   <option value="ATC">ATC</option>
                   <option value="Main">Main</option>
                   <option value="CNS">CNS</option>

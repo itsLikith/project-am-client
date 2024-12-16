@@ -59,7 +59,7 @@ const IssueContentADP = (props) => {
     <div>
       {props.selected === 'adp' ? (
         <>
-          <span className="h6 text-info">This is for ADP Issue</span>
+          <span className="h6 text-info">Issue ADP</span>
           <br />
           <form onSubmit={handleSubmit} className="container-fluid p-4">
             <div className="row">

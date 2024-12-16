@@ -6,7 +6,7 @@ import IssueContentADP from './IssueContentADP';
 const IssueContent = (props) => {
   return (
     <div className="issue-content">
-      <span className="h5 text-danger">Issue Content</span>
+      <span className="h5 text-danger">Issue</span>
       <p className="d-flex justify-content-center">
         <Radio />
       </p>

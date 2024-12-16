@@ -83,7 +83,7 @@ const IssueContentAVP = (props) => {
     <div>
       {props.selected === 'avp' ? (
         <>
-          <span className="h6 text-info">This is for AVP Issue</span>
+          <span className="h6 text-info">Issue AVP</span>
           <br />
           <form onSubmit={handleSubmit} className="container-fluid p-4">
             <div className="row">

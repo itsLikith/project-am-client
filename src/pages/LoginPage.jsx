@@ -63,18 +63,22 @@ const LoginPage = (props) => {
         ) : props.userType === 'admin' ? (
           <p className="h6 text-center m-4">Admin Login</p>
         ) : null}
-        <div className="form-floating">
+        
+        <div className="mb-3">
+          <label htmlFor="username" className="form-label">Enter Username</label>
           <input
             type="text"
+            id="username"
             value={username}
             className="form-control"
             placeholder="Enter Username"
             onChange={(e) => setUsername(e.target.value)}
             required
           />
-          <label htmlFor="username">Enter Username</label>
         </div>
-        <div className="form-floating mt-1 mb-1">
+        
+        <div className="mb-3">
+          <label htmlFor="passkey" className="form-label">Enter Password</label>
           <input
             type={showPassword ? 'text' : 'password'}
             id="passkey"
@@ -84,9 +88,9 @@ const LoginPage = (props) => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <label htmlFor="password">Enter Password</label>
         </div>
-        <div className="form-check">
+        
+        <div className="form-check mb-3">
           <input
             type="checkbox"
             id="showPwd"
@@ -98,6 +102,7 @@ const LoginPage = (props) => {
             Show Password
           </label>
         </div>
+        
         {isLoading ? (
           <button className="btn btn-success mt-2 p-2 w-100" disabled>
             <span className="spinner-border spinner-border-sm"></span> Loading..
@@ -107,6 +112,7 @@ const LoginPage = (props) => {
             Login
           </button>
         )}
+        
         {message && <p className="text-danger">{message}</p>}
       </form>
     </div>

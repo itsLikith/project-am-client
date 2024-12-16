@@ -1,15 +1,71 @@
 import { Search } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import styled from 'styled-components';
+
+// Styled components
+const RecordsContainer = styled.div`
+  .input-group {
+    margin-top: 1rem;
+  }
+
+  .table {
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .text-danger {
+    color: red; /* Adjust color as needed */
+  }
+`;
 
 const RecordsContent = () => {
+  const [records, setRecords] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
+
+  // Function to fetch records from the API
+  const fetchRecords = async () => {
+    try {
+      const response = await axios.get(
+        'https://accessmatrix.vercel.app/api/users/employees/all'
+      );
+      if (response.data.success) {
+        const processedRecords = response.data.data.users.map((user) => ({
+          name: user.employeeName,
+          aepId: user.employeeId,
+          adpId: user.adpId || 'N/A', // Assuming adpId exists in user data
+          avpId: user.avpId || 'N/A', // Assuming avpId exists in user data
+          entryTime: user.entryTime || 'N/A', // Assuming entryTime exists in user data
+          exitTime: user.exitTime || 'N/A', // Assuming exitTime exists in user data
+          date: new Date(user.date).toLocaleDateString(), // Assuming date exists in user data
+        }));
+        setRecords(processedRecords);
+      }
+    } catch (error) {
+      console.error('Error fetching records:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRecords();
+  }, []);
+
+  // Handle search functionality
+  const filteredRecords = records.filter((record) =>
+    record.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className="records-content">
-      <span className="h5 text-danger">Records Content</span>
+    <RecordsContainer>
+      <span className="h5 text-danger">Records</span>
       <p className="mt-3">
         From:{' '}
         <input
           type="datetime-local"
-          name="date"
-          id="date"
+          value={fromDate}
+          onChange={(e) => setFromDate(e.target.value)}
           className="form-control mt-1"
         />
       </p>
@@ -17,8 +73,8 @@ const RecordsContent = () => {
         To:{' '}
         <input
           type="datetime-local"
-          name="date"
-          id="date"
+          value={toDate}
+          onChange={(e) => setToDate(e.target.value)}
           className="form-control mt-1"
         />
       </p>
@@ -30,44 +86,37 @@ const RecordsContent = () => {
           type="text"
           className="form-control"
           placeholder="Search Employee"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </span>
       <table className="table mt-3">
         <thead>
           <tr>
-            <th rowSpan="2">Employee Name</th>
-            <th rowSpan="2">AEP ID</th>
-            <th rowSpan="2">ADP ID</th>
-            <th rowSpan="2">AVP ID</th>
-            <th colspan="2" className="text-center">
-              Time
-            </th>
-          </tr>
-          <tr>
+            <th>Employee Name</th>
+            <th>AEP ID</th>
+            <th>ADP ID</th>
+            <th>AVP ID</th>
+            <th>Date</th>
             <th>Entry</th>
             <th>Exit</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>John Doe</td>
-            <td>123</td>
-            <td>456</td>
-            <td>789</td>
-            <td>9:00 AM</td>
-            <td>5:00 PM</td>
-          </tr>
-          <tr>
-            <td>Jane Smith</td>
-            <td>234</td>
-            <td>567</td>
-            <td>890</td>
-            <td>9:15 AM</td>
-            <td>4:45 PM</td>
-          </tr>
+          {filteredRecords.map((record, index) => (
+            <tr key={index}>
+              <td>{record.name}</td>
+              <td>{record.aepId}</td>
+              <td>{record.adpId}</td>
+              <td>{record.avpId}</td>
+              <td>{record.date}</td>
+              <td>{record.entryTime}</td>
+              <td>{record.exitTime}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
-    </div>
+    </RecordsContainer>
   );
 };
 
