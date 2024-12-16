@@ -33,8 +33,6 @@ This software is currently live and operational at **Kalaburagi Airport** for se
 ```plaintext
 Access-Matrix/
 ├── client/           # Frontend application
-├── public/           # Public assets (e.g., images, CSS)
-├── .env              # Environment variables
 └── README.md         # Documentation
 ```
 
