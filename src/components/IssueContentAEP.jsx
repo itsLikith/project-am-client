@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const IssueContentAEP = (props) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     aepNumber: '',
     employeeName: '',
@@ -26,9 +28,29 @@ const IssueContentAEP = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    const packet = {
+      AEPId: formData.aepNumber,
+      Locations: [formData.locations], // Ensure this is an array
+      EmployeeName: formData.employeeName,
+      DateofIssue: formData.dateOfIssue,
+      DateofExpiry: formData.dateOfExpiry,
+      IssuedBy: formData.issuedBy,
+      status: formData.status,
+      AdpAvailable: formData.adpAvailable,
+    };
+
     try {
-      const response = await axios.post('/your-api-endpoint', formData); // Replace with your API endpoint
-      console.log('Form submitted successfully:', response.data);
+      const response = await axios.post('https://accessmatrix.vercel.app/api/admin/AEP/', packet);
+      console.log(response.data);
+      if (response.data.success) {
+        navigate('/admin/home/issue/aep');
+      } else {
+        console.error('Error:', response.data.message);
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    } finally {
       // Reset the form data after submission
       setFormData({
         aepNumber: '',
@@ -43,31 +65,12 @@ const IssueContentAEP = (props) => {
         status: '',
         adpAvailable: false,
       });
-    } catch (error) {
-      console.error('Error submitting form:', error);
     }
-
-    const packet = {
-      AEPId: formData.aepNumber,
-      Locations: ['Init'], //array of strings,
-      EmployeeName: formData.employeeName,
-      DateofIssue: formData.dateOfIssue,
-      DateofExpiry: formData.dateOfExpiry,
-      IssuedBy: formData.issuedBy,
-      status: formData.status,
-      AdpAvailable: formData.adpAvailable,
-    };
-
-    const response = await axios.post(
-      'https://accessmatrix.vercel.app/api/admin/AEP/',
-      packet
-    );
-    console.log(response.data);
   };
 
   return (
     <div>
-      {props.selected === 'aep' ? (
+      {props.selected === 'aep' && (
         <>
           <span className="h6 text-info">Issue AEP</span>
           <form onSubmit={handleSubmit} className="container-fluid p-4">
@@ -79,6 +82,7 @@ const IssueContentAEP = (props) => {
                   name="aepNumber"
                   placeholder="Enter AEP number"
                   required
+                  value={formData.aepNumber}
                   onChange={handleChange}
                 />
               </div>
@@ -89,26 +93,7 @@ const IssueContentAEP = (props) => {
                   name="employeeName"
                   placeholder="Enter employee name"
                   required
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="col-md-6 mb-3">
-                <label>From:</label>
-                <input
-                  type="date"
-                  className="form-control"
-                  name="fromDate"
-                  required
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="col-md-6 mb-3">
-                <label>To:</label>
-                <input
-                  type="date"
-                  className="form-control"
-                  name="toDate"
-                  required
+                  value={formData.employeeName}
                   onChange={handleChange}
                 />
               </div>
@@ -118,11 +103,10 @@ const IssueContentAEP = (props) => {
                   className="form-control"
                   name="locations"
                   required
+                  value={formData.locations}
                   onChange={handleChange}
                 >
-                  <option value="" selected disabled>
-                    Select Location
-                  </option>
+                  <option value="" disabled>Select Location</option>
                   <option value="ATC">ATC</option>
                   <option value="Main">Main</option>
                   <option value="CNS">CNS</option>
@@ -135,6 +119,7 @@ const IssueContentAEP = (props) => {
                   className="form-control"
                   name="dateOfIssue"
                   required
+                  value={formData.dateOfIssue}
                   onChange={handleChange}
                 />
               </div>
@@ -145,6 +130,7 @@ const IssueContentAEP = (props) => {
                   className="form-control"
                   name="dateOfExpiry"
                   required
+                  value={formData.dateOfExpiry}
                   onChange={handleChange}
                 />
               </div>
@@ -155,6 +141,7 @@ const IssueContentAEP = (props) => {
                   name="issuedBy"
                   placeholder="Issued By"
                   required
+                  value={formData.issuedBy}
                   onChange={handleChange}
                 />
               </div>
@@ -163,11 +150,10 @@ const IssueContentAEP = (props) => {
                   className="form-control"
                   name="status"
                   required
+                  value={formData.status}
                   onChange={handleChange}
                 >
-                  <option value="" selected disabled>
-                    Select Status
-                  </option>
+                  <option value="" disabled>Select Status</option>
                   <option value="Active">Active</option>
                   <option value="Inactive">Inactive</option>
                   <option value="Block">Block</option>
@@ -178,7 +164,9 @@ const IssueContentAEP = (props) => {
               <textarea
                 className="form-control"
                 rows="3"
+                name="validAreas"
                 placeholder="Enter valid areas"
+                value={formData.validAreas}
                 onChange={handleChange}
               ></textarea>
             </div>
@@ -187,6 +175,7 @@ const IssueContentAEP = (props) => {
                 <input
                   type="checkbox"
                   name="adpAvailable"
+                  checked={formData.adpAvailable}
                   onChange={handleChange}
                 />{' '}
                 ADP Available
@@ -197,7 +186,7 @@ const IssueContentAEP = (props) => {
             </p>
           </form>
         </>
-      ) : null}
+      )}
     </div>
   );
 };
