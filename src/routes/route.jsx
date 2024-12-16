@@ -27,7 +27,7 @@ const AppRoutes = () => {
         />
         <Route
           path="/admin/issue"
-          element={<AdminHome viewContent="issue" />}
+          element={<AdminHome viewContent="issue" selected="none" />}
         />
         <Route
           path="/admin/record"
@@ -38,9 +38,14 @@ const AppRoutes = () => {
           element={<AdminHome viewContent="issue" selected="aep" />}
         />
         <Route
-          path='/admin/settings'
-          element={<AdminSettings />}
+          path="/admin/home/issue/avp"
+          element={<AdminHome viewContent="issue" selected="avp" />}
         />
+        <Route
+          path="/admin/home/issue/adp"
+          element={<AdminHome viewContent="issue" selected="adp" />}
+        />
+        <Route path="/admin/settings" element={<AdminSettings />} />
       </Routes>
     </Router>
   );

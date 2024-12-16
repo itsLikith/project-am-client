@@ -18,7 +18,7 @@ const NavContent = (props) => {
       ) : props.viewContent === 'validity' ? (
         <ValidityContent />
       ) : props.viewContent === 'issue' ? (
-        <IssueContent />
+        <IssueContent selected={props.selected} />
       ) : props.viewContent === 'logrecord' ? (
         <RecordsContent />
       ) : null}

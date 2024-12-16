@@ -3,8 +3,8 @@ import { Search } from 'lucide-react';
 const RecordsContent = () => {
   return (
     <div className="records-content">
-      <span className="h5">Records Content</span>
-      <p className='mt-3'>
+      <span className="h5 text-danger">Records Content</span>
+      <p className="mt-3">
         From:{' '}
         <input
           type="datetime-local"
@@ -13,7 +13,7 @@ const RecordsContent = () => {
           className="form-control mt-1"
         />
       </p>
-      <p className='mt-1'>
+      <p className="mt-1">
         To:{' '}
         <input
           type="datetime-local"

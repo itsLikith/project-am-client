@@ -36,7 +36,7 @@ const ValidityContent = () => {
   return (
     <div className="employee-content">
       <p className="d-block justify-content-between">
-        <span className="h5">Validity Content</span>
+        <span className="h5 text-danger">Validity Content</span>
         <span className="input-group mt-4">
           <span className="input-group-text">
             <Search size={21} />

@@ -8,7 +8,7 @@ const AdminHome = (props) => {
     <React.Fragment>
       <div className="adm-page">
         <AdminHeader />
-        <NavContent viewContent={props.viewContent} />
+        <NavContent viewContent={props.viewContent} selected={props.selected} />
       </div>
     </React.Fragment>
   );

@@ -1,9 +1,11 @@
-const IssueContentAEP = (props) => {
+// IssueContentAVP.js
+const IssueContentAVP = (props) => {
   return (
     <div>
-      {props.selected === 'aep' ? (
+      {props.selected === 'avp' ? (
         <>
-          <span className="h6 text-info">This is for AEP Issue</span>
+          <span className="h6 text-info">This is for AVP Issue</span>
+          <br />
           <form action="" className="container-fluid p-4">
             <div className="row">
               <div class="col-md-4 mb-3">
@@ -11,7 +13,7 @@ const IssueContentAEP = (props) => {
                   type="text"
                   class="form-control"
                   id="inputName"
-                  placeholder="Enter AEP number"
+                  placeholder="Enter AVP number"
                   required
                 />
               </div>
@@ -20,7 +22,7 @@ const IssueContentAEP = (props) => {
                   type="text"
                   class="form-control"
                   id="inputName"
-                  placeholder="Enter employee name"
+                  placeholder="Enter vehicle number"
                   required
                 />
               </div>
@@ -29,7 +31,7 @@ const IssueContentAEP = (props) => {
                   type="text"
                   class="form-control"
                   id="inputName"
-                  placeholder="Enter employee ID"
+                  placeholder="Enter vehicle type"
                   required
                 />
               </div>
@@ -38,9 +40,21 @@ const IssueContentAEP = (props) => {
                   <input
                     type="text"
                     class="form-control"
-                    placeholder="Enter employee department"
+                    placeholder="Enter AEP number"
                     required
                   />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div className="form-control">
+                    <label htmlFor="">Enter renewal date: </label>
+                    <input type="date" class="form-control" required />
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div className="form-control">
+                    <label htmlFor="">Enter expiry date: </label>
+                    <input type="date" class="form-control" required />
+                  </div>
                 </div>
               </div>
               <div className="row">
@@ -63,4 +77,4 @@ const IssueContentAEP = (props) => {
   );
 };
 
-export default IssueContentAEP;
+export default IssueContentAVP;
