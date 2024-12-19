@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react';
+import { Search, LibraryBig } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
@@ -59,7 +59,10 @@ const RecordsContent = () => {
 
   return (
     <RecordsContainer>
-      <span className="h5 text-danger">Records</span>
+      <span className="h5 text-danger d-flex align-items-center gap-1">
+        Records
+        <LibraryBig />
+      </span>
       <p className="mt-3">
         From:{' '}
         <input

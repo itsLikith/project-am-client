@@ -28,7 +28,7 @@ const IssueContentAEP = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const packet = {
       AEPId: formData.aepNumber,
       Locations: [formData.locations], // Ensure this is an array
@@ -41,7 +41,10 @@ const IssueContentAEP = (props) => {
     };
 
     try {
-      const response = await axios.post('https://accessmatrix.vercel.app/api/admin/AEP/', packet);
+      const response = await axios.post(
+        'https://accessmatrix.vercel.app/api/admin/AEP/',
+        packet
+      );
       console.log(response.data);
       if (response.data.success) {
         navigate('/admin/home/issue/aep');
@@ -106,7 +109,9 @@ const IssueContentAEP = (props) => {
                   value={formData.locations}
                   onChange={handleChange}
                 >
-                  <option value="" disabled>Select Location</option>
+                  <option value="" disabled>
+                    Select Location
+                  </option>
                   <option value="ATC">ATC</option>
                   <option value="Main">Main</option>
                   <option value="CNS">CNS</option>
@@ -153,7 +158,9 @@ const IssueContentAEP = (props) => {
                   value={formData.status}
                   onChange={handleChange}
                 >
-                  <option value="" disabled>Select Status</option>
+                  <option value="" disabled>
+                    Select Status
+                  </option>
                   <option value="Active">Active</option>
                   <option value="Inactive">Inactive</option>
                   <option value="Block">Block</option>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Save } from 'lucide-react';
 
 const RenewContent = () => {
   const [selected, setSelected] = useState('');
@@ -40,8 +41,11 @@ const RenewContent = () => {
               <input type="date" className="form-control" />
             </div>
           </div>
-          <span className="d-flex justify-content-center mt-5">
-            <input type="submit" value="Save" className="btn btn-success" />
+          <span className="d-flex justify-content-center mt-4">
+            <button className="btn btn-success d-flex align-items-center gap-1 justify-content-center">
+              Save
+              <Save size={18} />
+            </button>
           </span>
         </>
       ) : selected === 'avp' ? (
@@ -61,8 +65,11 @@ const RenewContent = () => {
               <input type="date" className="form-control" />
             </div>
           </div>
-          <span className="d-flex justify-content-center mt-5">
-            <input type="submit" value="Save" className="btn btn-success" />
+          <span className="d-flex justify-content-center mt-4">
+            <button className="btn btn-success d-flex align-items-center gap-1 justify-content-center">
+              Save
+              <Save size={18} />
+            </button>
           </span>
         </>
       ) : selected === 'aep' ? (
@@ -82,8 +89,11 @@ const RenewContent = () => {
               <input type="date" className="form-control" />
             </div>
           </div>
-          <span className="d-flex justify-content-center mt-5">
-            <input type="submit" value="Save" className="btn btn-success" />
+          <span className="d-flex justify-content-center mt-4">
+            <button className="btn btn-success d-flex align-items-center gap-1 justify-content-center">
+              Save
+              <Save size={18} />
+            </button>
           </span>
         </>
       ) : null}

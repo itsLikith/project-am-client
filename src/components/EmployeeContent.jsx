@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react';
+import { Search, UsersRound } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 const EmployeeContent = () => {
@@ -54,7 +54,9 @@ const EmployeeContent = () => {
   return (
     <div className="employee-content">
       <p className="d-block justify-content-between">
-        <span className="h5 text-danger">Employee</span>
+        <span className="h5 text-danger d-flex align-items-center gap-1">
+          Employee <UsersRound />
+        </span>
         <span className="input-group mt-4">
           <span className="input-group-text">
             <Search size={21} />

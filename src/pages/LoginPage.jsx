@@ -63,9 +63,11 @@ const LoginPage = (props) => {
         ) : props.userType === 'admin' ? (
           <p className="h6 text-center m-4">Admin Login</p>
         ) : null}
-        
+
         <div className="mb-3">
-          <label htmlFor="username" className="form-label">Enter Username</label>
+          <label htmlFor="username" className="form-label">
+            Enter Username
+          </label>
           <input
             type="text"
             id="username"
@@ -76,9 +78,11 @@ const LoginPage = (props) => {
             required
           />
         </div>
-        
+
         <div className="mb-3">
-          <label htmlFor="passkey" className="form-label">Enter Password</label>
+          <label htmlFor="passkey" className="form-label">
+            Enter Password
+          </label>
           <input
             type={showPassword ? 'text' : 'password'}
             id="passkey"
@@ -89,7 +93,7 @@ const LoginPage = (props) => {
             required
           />
         </div>
-        
+
         <div className="form-check mb-3">
           <input
             type="checkbox"
@@ -102,7 +106,7 @@ const LoginPage = (props) => {
             Show Password
           </label>
         </div>
-        
+
         {isLoading ? (
           <button className="btn btn-success mt-2 p-2 w-100" disabled>
             <span className="spinner-border spinner-border-sm"></span> Loading..
@@ -112,7 +116,7 @@ const LoginPage = (props) => {
             Login
           </button>
         )}
-        
+
         {message && <p className="text-danger">{message}</p>}
       </form>
     </div>

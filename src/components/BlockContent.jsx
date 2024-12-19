@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import {CircleOff} from "lucide-react";
 
 const BlockContent = () => {
   const [selected, setSelected] = useState('');
@@ -30,8 +31,10 @@ const BlockContent = () => {
             className="form-control col-md-12 mt-5"
             placeholder="Enter ADP ID"
           />
-          <span className="d-flex justify-content-center mt-5">
-            <input type="submit" value="Block" className="btn btn-danger" />
+          <span className='d-flex justify-content-center mt-3'>
+            <button className='btn btn-danger d-flex align-items-center gap-1'>
+              Block <CircleOff size={18} />
+            </button>
           </span>
         </>
       ) : selected === 'avp' ? (
@@ -41,8 +44,10 @@ const BlockContent = () => {
             className="form-control col-md-12 mt-5"
             placeholder="Enter AVP ID"
           />
-          <span className="d-flex justify-content-center mt-5">
-            <input type="submit" value="Block" className="btn btn-danger" />
+          <span className='d-flex justify-content-center mt-3'>
+            <button className='btn btn-danger d-flex align-items-center gap-1'>
+              Block <CircleOff size={18} />
+            </button>
           </span>
         </>
       ) : selected === 'aep' ? (
@@ -52,8 +57,10 @@ const BlockContent = () => {
             className="form-control col-md-12 mt-5"
             placeholder="Enter AEP ID"
           />
-          <span className="d-flex justify-content-center mt-5">
-            <input type="submit" value="Block" className="btn btn-danger" />
+          <span className='d-flex justify-content-center mt-3'>
+            <button className='btn btn-danger d-flex align-items-center gap-1'>
+              Block <CircleOff size={18} />
+            </button>
           </span>
         </>
       ) : null}

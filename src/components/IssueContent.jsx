@@ -2,11 +2,15 @@ import IssueContentAEP from './IssueContentAEP';
 import Radio from './IssueContentOptions';
 import IssueContentAVP from './IssueContentAVP';
 import IssueContentADP from './IssueContentADP';
+import { NotebookPen } from 'lucide-react';
 
 const IssueContent = (props) => {
   return (
     <div className="issue-content">
-      <span className="h5 text-danger">Issue</span>
+      <span className="h5 text-danger d-flex align-items-center gap-1">
+        Issue
+        <NotebookPen />
+      </span>
       <p className="d-flex justify-content-center">
         <Radio />
       </p>

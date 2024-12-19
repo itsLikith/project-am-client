@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import SettingsRadio from '../components/SettingsRadio';
 import '../styles/AdminSettings.css';
-import { ArrowBigLeft } from 'lucide-react';
+import { ArrowBigLeft, BadgePlus, CircleOff, QrCode } from 'lucide-react';
 import RenewContent from '../components/RenewContent';
 import BlockContent from '../components/BlockContent';
 import GenerateQrAEP from '../components/GenerateQRaep';
@@ -51,29 +51,37 @@ const AdminSettings = (props) => {
       </p>
       {props.selected === 'authorize' && props.task === 'renew' ? (
         <>
-          <p className="h6 text-info">Renew</p>
+          <p className="h6 text-info d-flex align-items-center gap-1">
+            Renew
+            <BadgePlus size={18} />
+          </p>
           <RenewContent />
         </>
       ) : props.selected === 'authorize' && props.task === 'block' ? (
         <>
-          <p className="h6 text-info">Block</p>
+          <p className="h6 text-info d-flex align-items-center gap-1">
+            Block
+            <CircleOff size={18} />
+          </p>
           <BlockContent />
         </>
       ) : props.selected === 'generateQR' && props.task === 'aep' ? (
         <>
-          <p className="h6 text-info">Generate QR for AEP/ADP</p>
+          <p className="h6 text-info d-flex align-items-center gap-1">
+            Generate QR for AEP/ADP
+            <QrCode size={18} />
+          </p>
           <GenerateQrAEP />
         </>
       ) : props.selected === 'generateQR' && props.task === 'avp' ? (
         <>
-          <p className="h6 text-info">Generate QR for AVP</p>
+          <p className="h6 text-info d-flex align-items-center gap-1">
+            Generate QR for AVP
+            <QrCode size={18} />
+          </p>
           <GenerateQrAVP />
         </>
-      ) : props.selected === 'generateQR' && props.task === 'adp' ? (
-        <>
-          <p className="h6 text-info">Generate QR for ADP</p>
-        </>
-      ) : props.selected === '' && props.task === '' ? null : null}
+      ) : null}
     </div>
   );
 };

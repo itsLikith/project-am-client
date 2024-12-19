@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react';
+import { Search, TicketCheck } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
@@ -89,7 +89,9 @@ const ValidityContent = () => {
   return (
     <EmployeeContent>
       <p className="d-block justify-content-between">
-        <span className="h5 text-danger">Validity</span>
+        <span className="h5 text-danger d-flex align-items-center gap-1">
+          Validity <TicketCheck />
+        </span>
         <span className="input-group">
           <span className="input-group-text">
             <Search size={21} />
