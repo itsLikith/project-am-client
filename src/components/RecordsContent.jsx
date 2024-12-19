@@ -61,7 +61,7 @@ const RecordsContent = () => {
     <RecordsContainer>
       <span className="h5 text-danger d-flex align-items-center gap-1">
         Records
-        <LibraryBig />
+        <LibraryBig size={21} />
       </span>
       <p className="mt-3">
         From:{' '}

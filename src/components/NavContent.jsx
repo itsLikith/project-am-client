@@ -11,10 +11,10 @@ const NavContent = (props) => {
         backgroundColor: '#373737',
         color: 'whitesmoke',
         border: '11px solid #212529',
-        WebkitOverflowScrolling: 'touch', // Optional for smooth scrolling on iOS
-        msOverflowStyle: 'none', // For Internet Explorer and Edge
-        scrollbarWidth: 'none', // For Firefox
-        overflow: 'hidden', // To hide default scrollbar
+        WebkitOverflowScrolling: 'touch',
+        msOverflowStyle: 'none',
+        scrollbarWidth: 'none',
+        overflow: 'hidden',
       }}
     >
       {props.viewContent === 'employee' ? (

@@ -54,8 +54,8 @@ const EmployeeContent = () => {
   return (
     <div className="employee-content">
       <p className="d-block justify-content-between">
-        <span className="h5 text-danger d-flex align-items-center gap-1">
-          Employee <UsersRound />
+        <span className="h5 text-danger  d-flex align-items-center gap-1">
+          Employee <UsersRound size={21} />
         </span>
         <span className="input-group mt-4">
           <span className="input-group-text">
@@ -73,7 +73,7 @@ const EmployeeContent = () => {
       <table className="table">
         <thead>
           <tr>
-            <th>Employee ID</th>
+            {/* <th>Employee ID</th> */}
             <th>Employee Name</th>
             <th>AEP</th>
             <th>ADP</th>
@@ -83,7 +83,7 @@ const EmployeeContent = () => {
         <tbody>
           {filteredEmployees.map((employee) => (
             <tr key={employee.employeeId}>
-              <td>{employee.employeeId}</td>
+              {/* <td>{employee.employeeId}</td> */}
               <td>{employee.employeeName}</td>
               <td>
                 {employee.AEPs.length > 0 ? employee.AEPs[0].AEPId : 'N/A'}

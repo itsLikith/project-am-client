@@ -90,7 +90,7 @@ const ValidityContent = () => {
     <EmployeeContent>
       <p className="d-block justify-content-between">
         <span className="h5 text-danger d-flex align-items-center gap-1">
-          Validity <TicketCheck />
+          Validity <TicketCheck size={21} />
         </span>
         <span className="input-group">
           <span className="input-group-text">

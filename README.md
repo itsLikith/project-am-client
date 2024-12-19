@@ -65,7 +65,7 @@ Access-Matrix/
 
 ## 🤝 **Contributing**
 
-contributions are not accepted for this project
+Contributions are currently not supported for this project
 
 ---
 

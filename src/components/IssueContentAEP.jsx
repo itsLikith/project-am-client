@@ -48,6 +48,7 @@ const IssueContentAEP = (props) => {
       console.log(response.data);
       if (response.data.success) {
         navigate('/admin/home/issue/aep');
+        alert('AEP created');
       } else {
         console.error('Error:', response.data.message);
       }

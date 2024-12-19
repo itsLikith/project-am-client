@@ -9,7 +9,7 @@ const IssueContent = (props) => {
     <div className="issue-content">
       <span className="h5 text-danger d-flex align-items-center gap-1">
         Issue
-        <NotebookPen />
+        <NotebookPen size={21} />
       </span>
       <p className="d-flex justify-content-center">
         <Radio />
