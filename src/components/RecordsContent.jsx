@@ -22,29 +22,29 @@ const RecordsContainer = styled.div`
 const RecordsContent = () => {
   const [records, setRecords] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [fromDate, setFromDate] = useState('');
-  const [toDate, setToDate] = useState('');
+  const [loading, setLoading] = useState(true); // Loading state
 
   // Function to fetch records from the API
   const fetchRecords = async () => {
+    setLoading(true); // Set loading to true before fetching
     try {
       const response = await axios.get(
         'https://accessmatrix.vercel.app/api/users/employees/all'
       );
       if (response.data.success) {
-        const processedRecords = response.data.data.users.map((user) => ({
-          name: user.employeeName,
-          aepId: user.employeeId,
-          adpId: user.adpId || 'N/A', // Assuming adpId exists in user data
-          avpId: user.avpId || 'N/A', // Assuming avpId exists in user data
-          entryTime: user.entryTime || 'N/A', // Assuming entryTime exists in user data
-          exitTime: user.exitTime || 'N/A', // Assuming exitTime exists in user data
-          date: new Date(user.date).toLocaleDateString(), // Assuming date exists in user data
+        const processedRecords = response.data.data.aeps.map((aep) => ({
+          AEPId: aep.AEPId,
+          EmployeeName: aep.EmployeeName || 'N/A',
+          DateofIssue: new Date(aep.DateofIssue).toLocaleDateString(),
+          DateofExpiry: new Date(aep.DateofExpiry).toLocaleDateString(),
+          ADPs: aep.ADP || [],
         }));
         setRecords(processedRecords);
       }
     } catch (error) {
       console.error('Error fetching records:', error);
+    } finally {
+      setLoading(false); // Set loading to false after fetching
     }
   };
 
@@ -53,9 +53,13 @@ const RecordsContent = () => {
   }, []);
 
   // Handle search functionality
-  const filteredRecords = records.filter((record) =>
-    record.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredRecords = records.filter((record) => {
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      record.EmployeeName.toLowerCase().includes(searchLower) ||
+      record.AEPId.toString().includes(searchLower)
+    );
+  });
 
   return (
     <RecordsContainer>
@@ -63,24 +67,6 @@ const RecordsContent = () => {
         Records
         <LibraryBig size={21} />
       </span>
-      <p className="mt-3">
-        From:{' '}
-        <input
-          type="datetime-local"
-          value={fromDate}
-          onChange={(e) => setFromDate(e.target.value)}
-          className="form-control mt-1"
-        />
-      </p>
-      <p className="mt-1">
-        To:{' '}
-        <input
-          type="datetime-local"
-          value={toDate}
-          onChange={(e) => setToDate(e.target.value)}
-          className="form-control mt-1"
-        />
-      </p>
       <span className="input-group mt-2">
         <span className="input-group-text">
           <Search size={21} />
@@ -88,37 +74,60 @@ const RecordsContent = () => {
         <input
           type="text"
           className="form-control"
-          placeholder="Search Employee"
+          placeholder="Search Employee or AEP ID"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </span>
-      <table className="table mt-3">
-        <thead>
-          <tr>
-            <th>Employee Name</th>
-            <th>AEP ID</th>
-            <th>ADP ID</th>
-            <th>AVP ID</th>
-            <th>Date</th>
-            <th>Entry</th>
-            <th>Exit</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredRecords.map((record, index) => (
-            <tr key={index}>
-              <td>{record.name}</td>
-              <td>{record.aepId}</td>
-              <td>{record.adpId}</td>
-              <td>{record.avpId}</td>
-              <td>{record.date}</td>
-              <td>{record.entryTime}</td>
-              <td>{record.exitTime}</td>
+
+      {loading ? ( // Conditional rendering for loading
+        <div className="text-center">
+          <div className="spinner-border m-3" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      ) : (
+        <table className="table mt-3">
+          <thead>
+            <tr>
+              <th>AEP ID</th>
+              <th>Employee Name</th>
+              <th>Date of Issue</th>
+              <th>Date of Expiry</th>
+              <th>ADP ID</th>
+              <th>Authorized By</th>
+              <th>Designation</th>
+              <th>Organization</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredRecords.flatMap((record) =>
+              record.ADPs.length > 0 ? (
+                record.ADPs.map((adp) => (
+                  <tr key={adp._id}>
+                    <td>{record.AEPId}</td>
+                    <td>{record.EmployeeName}</td>
+                    <td>{record.DateofIssue}</td>
+                    <td>{record.DateofExpiry}</td>
+                    <td>{adp.ADPId}</td>
+                    <td>{adp.AuthorizedBy}</td>
+                    <td>{adp.Designation}</td>
+                    <td>{adp.Organization}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr key={record.AEPId}>
+                  <td>{record.AEPId}</td>
+                  <td>{record.EmployeeName}</td>
+                  <td>{record.DateofIssue}</td>
+                  <td>{record.DateofExpiry}</td>
+                  <td colSpan="4">No ADPs available</td>
+                </tr>
+              )
+            )}
+          </tbody>
+        </table>
+      )}
     </RecordsContainer>
   );
 };

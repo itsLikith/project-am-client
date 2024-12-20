@@ -1,61 +1,59 @@
-import { Search, UsersRound } from 'lucide-react';
+import { UsersRound, Search } from 'lucide-react';
 import { useState, useEffect } from 'react';
-
 const EmployeeContent = () => {
   const [employees, setEmployees] = useState([]);
+  const [aeps, setAEPs] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(true);
 
-  // Function to fetch employee details from the API
-  const fetchEmployees = async () => {
+  // Function to fetch employee and AEP details from the API
+  const fetchEmployeesAndAEPs = async () => {
+    setLoading(true);
     try {
       const response = await fetch(
         'https://accessmatrix.vercel.app/api/users/employees/all'
       );
       const data = await response.json();
       if (data.success) {
-        setEmployees(fetchEmployeeDetails(data));
+        setEmployees(data.data.users);
+        setAEPs(data.data.aeps);
       }
     } catch (error) {
-      console.error('Error fetching employee data:', error);
+      console.error('Error fetching employee and AEP data:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Function to process the API response
-  const fetchEmployeeDetails = (response) => {
-    return response.data.users.map((user) => {
-      // Find associated AEPs
-      const associatedAEPs = response.data.aeps.filter(
-        (aep) => aep.AEPId === user.employeeId
-      );
-
-      // Find associated AVPs
-      const associatedAVPs = response.data.avps.filter(
-        (avp) => avp.AVPId === user.employeeId
-      );
-
-      return {
-        employeeId: user.employeeId,
-        employeeName: user.employeeName,
-        AEPs: associatedAEPs,
-        AVPs: associatedAVPs,
-      };
-    });
-  };
-
   useEffect(() => {
-    fetchEmployees();
+    fetchEmployeesAndAEPs();
   }, []);
 
-  // Filter employees based on the search term
-  const filteredEmployees = employees.filter((employee) =>
-    employee.employeeName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filter AEPs based on the search term
+  const filteredData = aeps
+    .map((aep) => {
+      const employeeName = aep.EmployeeName || 'Unknown'; // Get EmployeeName directly from AEP
+      return {
+        AEPId: aep.AEPId,
+        employeeName: employeeName,
+        ADPs: aep.ADP || [],
+      };
+    })
+    .filter((item) => {
+      const nameMatch = item.employeeName
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      const aepMatch = item.AEPId.toLowerCase().includes(
+        searchTerm.toLowerCase()
+      );
+      return nameMatch || aepMatch;
+    });
 
   return (
     <div className="employee-content">
       <p className="d-block justify-content-between">
-        <span className="h5 text-danger  d-flex align-items-center gap-1">
-          Employee <UsersRound size={21} />
+        <span className="h5 text-danger d-flex align-items-center gap-1">
+          Employee <UsersRound size={22} />
         </span>
         <span className="input-group mt-4">
           <span className="input-group-text">
@@ -64,42 +62,43 @@ const EmployeeContent = () => {
           <input
             type="text"
             className="form-control"
-            placeholder="Search Employee"
+            placeholder="Search AEPs or Employee Names"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </span>
       </p>
-      <table className="table">
-        <thead>
-          <tr>
-            {/* <th>Employee ID</th> */}
-            <th>Employee Name</th>
-            <th>AEP</th>
-            <th>ADP</th>
-            <th>AVP</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredEmployees.map((employee) => (
-            <tr key={employee.employeeId}>
-              {/* <td>{employee.employeeId}</td> */}
-              <td>{employee.employeeName}</td>
-              <td>
-                {employee.AEPs.length > 0 ? employee.AEPs[0].AEPId : 'N/A'}
-              </td>
-              <td>
-                {employee.AEPs.length > 0 && employee.AEPs[0].ADP.length > 0
-                  ? employee.AEPs[0].ADP[0].ADPId
-                  : 'N/A'}
-              </td>
-              <td>
-                {employee.AVPs.length > 0 ? employee.AVPs[0].AVPId : 'N/A'}
-              </td>
+
+      {loading ? (
+        <div className="text-center">
+          <div className="spinner-border m-3" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      ) : (
+        <table className="table">
+          <thead>
+            <tr>
+              <th>AEP ID</th>
+              <th>Employee Name</th>
+              <th>ADP IDs</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredData.map((item) => (
+              <tr key={item.AEPId}>
+                <td>{item.AEPId}</td>
+                <td>{item.employeeName}</td>
+                <td>
+                  {item.ADPs.length > 0
+                    ? item.ADPs.map((adp) => adp.ADPId).join(', ')
+                    : 'N/A'}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 };

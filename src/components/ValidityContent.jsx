@@ -1,143 +1,185 @@
-import { Search, TicketCheck } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import styled from 'styled-components';
-
-// Styled components
-const EmployeeContent = styled.div`
-  .input-group {
-    margin-top: 1rem;
-  }
-
-  .table {
-    width: 100%;
-    margin-top: 1rem;
-  }
-
-  .text-warning {
-    color: orange; /* Color for expired */
-  }
-
-  .text-success {
-    color: green; /* Color for valid */
-  }
-`;
-
-const TableRow = styled.tr`
-  &.expired {
-    color: orange; /* Expired */
-  }
-
-  &.valid {
-    color: green; /* More than 10 days remaining */
-  }
-`;
+import { TicketCheck, Search } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 const ValidityContent = () => {
   const [employees, setEmployees] = useState([]);
+  const [aeps, setAEPs] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(true);
 
-  // Function to fetch employee details from the API
-  const fetchEmployees = async () => {
+  // Function to fetch employee and AEP details from the API
+  const fetchEmployeesAndAEPs = async () => {
+    setLoading(true);
     try {
-      const response = await axios.get(
+      const response = await fetch(
         'https://accessmatrix.vercel.app/api/users/employees/all'
       );
-      if (response.data.success) {
-        setEmployees(fetchEmployeeDetails(response.data));
+      const data = await response.json();
+      if (data.success) {
+        setEmployees(data.data.users);
+        setAEPs(data.data.aeps);
       }
     } catch (error) {
-      console.error('Error fetching employee data:', error);
+      console.error('Error fetching employee and AEP data:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Process the API response to extract employee details
-  const fetchEmployeeDetails = (data) => {
-    return data.data.users.map((user) => {
-      const associatedAEPs = data.data.aeps.filter(
-        (aep) => aep.AEPId === user.employeeId
-      );
-      const associatedAVPs = data.data.avps.filter(
-        (avp) => avp.AVPId === user.employeeId
-      );
-
-      return {
-        id: user.employeeId,
-        name: user.employeeName,
-        aepAdp: associatedAEPs.length > 0 ? associatedAEPs[0].AEPId : 'N/A',
-        avp: associatedAVPs.length > 0 ? associatedAVPs[0].AVPId : 'N/A',
-        expiryDate: user.expiryDate, // Assuming expiryDate is part of user data
-      };
-    });
-  };
-
   useEffect(() => {
-    fetchEmployees();
+    fetchEmployeesAndAEPs();
   }, []);
 
-  const currentDate = new Date();
-  currentDate.setHours(0, 0, 0, 0); // Set time to 00:00:00
+  // Function to format date to YYYY-MM-DD
+  const formatDate = (dateString) => {
+    return dateString ? dateString.split('T')[0] : 'N/A';
+  };
 
-  const dateInTenDays = new Date(currentDate);
-  dateInTenDays.setDate(currentDate.getDate() + 10);
+  // Function to check if the expiry date is within 10 days
+  const isExpiringSoon = (expiryDate) => {
+    const currentDate = new Date();
+    const expiry = new Date(expiryDate);
+    const timeDiff = expiry - currentDate;
+    const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+    return daysDiff < 10;
+  };
 
-  // Filter employees based on the search term
-  const filteredEmployees = employees.filter((employee) =>
-    employee.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filter AEPs based on the search term
+  const filteredData = aeps
+    .map((aep) => {
+      const employeeName = aep.EmployeeName || 'Unknown'; // Get EmployeeName directly from AEP
+      return {
+        AEPId: aep.AEPId,
+        employeeName: employeeName,
+        ADPs: aep.ADP || [],
+        aepExpiry: formatDate(aep.DateofExpiry), // Format AEP expiry date
+      };
+    })
+    .filter((item) => {
+      const nameMatch = item.employeeName
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      const aepMatch = item.AEPId.toLowerCase().includes(
+        searchTerm.toLowerCase()
+      );
+      return nameMatch || aepMatch;
+    });
+
+  // Separate into expiring soon and not expiring soon
+  const expiringSoonItems = [];
+  const notExpiringSoonItems = [];
+
+  filteredData.forEach((item) => {
+    if (isExpiringSoon(item.aepExpiry)) {
+      expiringSoonItems.push(item);
+    } else {
+      notExpiringSoonItems.push(item);
+    }
+  });
+
+  // Combine the arrays, with expiring soon items first
+  const sortedData = [...expiringSoonItems, ...notExpiringSoonItems];
 
   return (
-    <EmployeeContent>
+    <div className="employee-content">
       <p className="d-block justify-content-between">
         <span className="h5 text-danger d-flex align-items-center gap-1">
-          Validity <TicketCheck size={21} />
+          Validity <TicketCheck size={22} />
         </span>
-        <span className="input-group">
+        <span className="input-group mt-4">
           <span className="input-group-text">
             <Search size={21} />
           </span>
           <input
             type="text"
             className="form-control"
-            placeholder="Search Employee"
+            placeholder="Search AEPs or Employee Names"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </span>
       </p>
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Employee ID</th>
-            <th>Employee Name</th>
-            <th>AEP/ADP</th>
-            <th>AVP</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredEmployees.map((employee) => {
-            const expiryDate = new Date(employee.expiryDate);
-            expiryDate.setHours(0, 0, 0, 0); // Set expiry date time to 00:00:00
 
-            let rowClass = '';
-            if (expiryDate < currentDate) {
-              rowClass = 'expired'; // Expired
-            } else if (expiryDate > dateInTenDays) {
-              rowClass = 'valid'; // More than 10 days remaining
-            }
-
-            return (
-              <TableRow key={employee.id} className={rowClass}>
-                <td>{employee.id}</td>
-                <td>{employee.name}</td>
-                <td>{employee.aepAdp}</td>
-                <td>{employee.avp}</td>
-              </TableRow>
-            );
-          })}
-        </tbody>
-      </table>
-    </EmployeeContent>
+      {loading ? (
+        <div className="text-center">
+          <div className="spinner-border m-3" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      ) : (
+        <table className="table">
+          <thead>
+            <tr>
+              <th>AEP ID</th>
+              <th>Employee Name</th>
+              <th>ADP ID</th>
+              <th>AEP Expiry Date</th>
+              <th>ADP Expiry Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sortedData.flatMap((item) =>
+              item.ADPs.length > 0 ? (
+                item.ADPs.map((adp) => {
+                  const adpExpiry = formatDate(adp.ADPValidity);
+                  const rowClass = isExpiringSoon(adpExpiry)
+                    ? 'table-danger'
+                    : 'table-success';
+                  return (
+                    <tr key={`${item.AEPId}-${adp.ADPId}`} className={rowClass}>
+                      <td>{item.AEPId}</td>
+                      <td>{item.employeeName}</td>
+                      <td>{adp.ADPId}</td>
+                      <td
+                        className={
+                          isExpiringSoon(item.aepExpiry)
+                            ? 'text-danger'
+                            : 'text-success'
+                        }
+                      >
+                        {item.aepExpiry}
+                      </td>
+                      <td
+                        className={
+                          isExpiringSoon(adpExpiry)
+                            ? 'text-danger'
+                            : 'text-success'
+                        }
+                      >
+                        {adpExpiry}
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr
+                  key={item.AEPId}
+                  className={
+                    isExpiringSoon(item.aepExpiry)
+                      ? 'table-danger'
+                      : 'table-success'
+                  }
+                >
+                  <td>{item.AEPId}</td>
+                  <td>{item.employeeName}</td>
+                  <td>N/A</td>
+                  <td
+                    className={
+                      isExpiringSoon(item.aepExpiry)
+                        ? 'text-danger'
+                        : 'text-success'
+                    }
+                  >
+                    {item.aepExpiry}
+                  </td>
+                  <td>N/A</td>
+                </tr>
+              )
+            )}
+          </tbody>
+        </table>
+      )}
+    </div>
   );
 };
 

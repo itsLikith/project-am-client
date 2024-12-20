@@ -118,16 +118,6 @@ const IssueContentAVP = (props) => {
                   onChange={handleChange}
                 />
               </div>
-              <div className="col-md-12 mb-3">
-                <input
-                  type="text"
-                  className="form-control"
-                  name="aepNumber"
-                  placeholder="Enter AEP number"
-                  required
-                  onChange={handleChange}
-                />
-              </div>
               <div className="col-md-6 mb-3">
                 <div className="form-control">
                   <label>Enter renewal date: </label>
