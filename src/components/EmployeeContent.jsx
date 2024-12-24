@@ -1,27 +1,30 @@
 import { UsersRound, Search } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import EmployeeContentRadio from './EmployeeContentRadio';
+import axios from 'axios';
 
 const EmployeeContent = (props) => {
   const [employees, setEmployees] = useState([]);
   const [aeps, setAEPs] = useState([]);
+  const [avps, setAVPs] = useState([]); // State for AVPs
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
 
-  // Function to fetch employee and AEP details from the API
+  // Function to fetch employee, AEP, and AVP details from the API
   const fetchEmployeesAndAEPs = async () => {
     setLoading(true);
     try {
-      const response = await fetch(
+      const AllData = await axios.get(
         'https://accessmatrix.vercel.app/api/users/employees/all'
       );
-      const data = await response.json();
-      if (data.success) {
-        setEmployees(data.data.users);
-        setAEPs(data.data.aeps);
+      const response = AllData.data;
+      if (response.success) {
+        setEmployees(response.data.users);
+        setAEPs(response.data.aeps);
+        setAVPs(response.data.avps); // Set AVP data
       }
     } catch (error) {
-      console.error('Error fetching employee and AEP data:', error);
+      console.error('Error fetching employee, AEP, and AVP data:', error);
     } finally {
       setLoading(false);
     }
@@ -32,9 +35,9 @@ const EmployeeContent = (props) => {
   }, []);
 
   // Filter AEPs based on the search term
-  const filteredData = aeps
+  const filteredAEPs = aeps
     .map((aep) => {
-      const employeeName = aep.EmployeeName || 'Unknown'; // Get EmployeeName directly from AEP
+      const employeeName = aep.EmployeeName || 'Unknown';
       return {
         AEPId: aep.AEPId,
         employeeName: employeeName,
@@ -50,6 +53,11 @@ const EmployeeContent = (props) => {
       );
       return nameMatch || aepMatch;
     });
+
+  // Filter AVPs based on the search term
+  const filteredAVPs = avps.filter((avp) =>
+    avp.Name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="employee-content">
@@ -93,7 +101,7 @@ const EmployeeContent = (props) => {
                 </tr>
               </thead>
               <tbody>
-                {filteredData.map((item) => (
+                {filteredAEPs.map((item) => (
                   <tr key={item.AEPId}>
                     <td>{item.AEPId}</td>
                     <td>{item.employeeName}</td>
@@ -122,19 +130,37 @@ const EmployeeContent = (props) => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </span>
-          <table className="table mt-3">
-            <thead>
-              <tr>
-                <th>AVP</th>
-              </tr>
-            </thead>
-            <tbody>
-              {/* Placeholder for AVP data; replace with actual AVP data handling */}
-              <tr>
-                <td>No AVP data available</td>
-              </tr>
-            </tbody>
-          </table>
+
+          {loading ? (
+            <div className="text-center">
+              <div className="spinner-border m-3" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          ) : (
+            <table className="table mt-3">
+              <thead>
+                <tr>
+                  <th>AVP ID</th>
+                  <th>Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredAVPs.length > 0 ? (
+                  filteredAVPs.map((avp) => (
+                    <tr key={avp.AVPId}>
+                      <td>{avp.AVPId}</td>
+                      <td>{avp.Name}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5">No AVP data available</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
         </>
       ) : null}
     </div>

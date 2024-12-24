@@ -8,14 +8,11 @@ const IssueContentAEP = (props) => {
   const [formData, setFormData] = useState({
     aepNumber: '',
     employeeName: '',
-    fromDate: '',
-    toDate: '',
-    validAreas: '',
-    locations: '',
     dateOfIssue: '',
     dateOfExpiry: '',
     issuedBy: '',
     status: '',
+    locations: '',
     adpAvailable: false,
   });
 
@@ -59,14 +56,11 @@ const IssueContentAEP = (props) => {
       setFormData({
         aepNumber: '',
         employeeName: '',
-        fromDate: '',
-        toDate: '',
-        validAreas: '',
-        locations: '',
         dateOfIssue: '',
         dateOfExpiry: '',
         issuedBy: '',
         status: '',
+        locations: '',
         adpAvailable: false,
       });
     }
@@ -76,11 +70,10 @@ const IssueContentAEP = (props) => {
     <div>
       {props.selected === 'aep' && (
         <>
-          <span className="h6 text-info">Issue AEP</span>
+          <h6 className="text-info">Issue AEP</h6>
           <form onSubmit={handleSubmit} className="container-fluid p-4">
-            <div className="row">
-              <div className="col-md-6 mb-3">
-                <label htmlFor="aepNumber">AEP Number</label>
+            <div className="row mb-3">
+              <div className="col-md-6">
                 <input
                   type="text"
                   className="form-control"
@@ -88,11 +81,11 @@ const IssueContentAEP = (props) => {
                   name="aepNumber"
                   value={formData.aepNumber}
                   onChange={handleChange}
+                  placeholder="Enter AEP Number"
                   required
                 />
               </div>
-              <div className="col-md-6 mb-3">
-                <label htmlFor="employeeName">Employee Name</label>
+              <div className="col-md-6">
                 <input
                   type="text"
                   className="form-control"
@@ -100,39 +93,43 @@ const IssueContentAEP = (props) => {
                   name="employeeName"
                   value={formData.employeeName}
                   onChange={handleChange}
+                  placeholder="Enter Employee Name"
                   required
                 />
               </div>
             </div>
-            <div className="row">
-              <div className="col-md-6 mb-3">
-                <label htmlFor="dateOfIssue">Date of Issue</label>
-                <input
-                  type="date"
-                  className="form-control"
-                  id="dateOfIssue"
-                  name="dateOfIssue"
-                  value={formData.dateOfIssue}
-                  onChange={handleChange}
-                  required
-                />
+            <div className="row mb-3">
+              <div className="col-md-6">
+                <div className="form-control">
+                  <label htmlFor="dateOfIssue">Date of Issue</label>
+                  <input
+                    type="date"
+                    className="form-control"
+                    id="dateOfIssue"
+                    name="dateOfIssue"
+                    value={formData.dateOfIssue}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
               </div>
-              <div className="col-md-6 mb-3">
-                <label htmlFor="dateOfExpiry">Date of Expiry</label>
-                <input
-                  type="date"
-                  className="form-control"
-                  id="dateOfExpiry"
-                  name="dateOfExpiry"
-                  value={formData.dateOfExpiry}
-                  onChange={handleChange}
-                  required
-                />
+              <div className="col-md-6">
+                <div className="form-control">
+                  <label htmlFor="dateOfExpiry">Date of Expiry</label>
+                  <input
+                    type="date"
+                    className="form-control"
+                    id="dateOfExpiry"
+                    name="dateOfExpiry"
+                    value={formData.dateOfExpiry}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
               </div>
             </div>
-            <div className="row">
-              <div className="col-md-6 mb-3">
-                <label htmlFor="issuedBy">Issued By</label>
+            <div className="row mb-3">
+              <div className="col-md-6">
                 <input
                   type="text"
                   className="form-control"
@@ -140,11 +137,11 @@ const IssueContentAEP = (props) => {
                   name="issuedBy"
                   value={formData.issuedBy}
                   onChange={handleChange}
+                  placeholder="Issued By"
                   required
                 />
               </div>
-              <div className="col-md-6 mb-3">
-                <label htmlFor="status">Status</label>
+              <div className="col-md-6">
                 <select
                   className="form-control"
                   id="status"
@@ -161,8 +158,7 @@ const IssueContentAEP = (props) => {
                 </select>
               </div>
             </div>
-            <div className="col-md-12 mb-3">
-              <label>Select Locations:</label>
+            <div className="mb-3">
               <select
                 className="form-control"
                 name="locations"
@@ -174,9 +170,9 @@ const IssueContentAEP = (props) => {
                   Select Location
                 </option>
                 <option value="A">Arrival Hall</option>
-                <option value="D">Depature Hall</option>
+                <option value="D">Departure Hall</option>
                 <option value="T">Terminal Building</option>
-                <option value="S">Terminal Builnding</option>
+                <option value="S">Terminal Building</option>
                 <option value="P">Apron Area</option>
                 <option value="B">Baggage Handling</option>
                 <option value="F">Air Traffic Control except ATC tower</option>
@@ -187,11 +183,13 @@ const IssueContentAEP = (props) => {
                 <option value="Ci">
                   Cargo Terminal without Cargo SHA-Intl
                 </option>
-                <option value="Cs">Cargo SHA pertainig to C or Cd or Ci</option>
+                <option value="Cs">
+                  Cargo SHA pertaining to C or Cd or Ci
+                </option>
                 <option value="I">Boarding Gates to Immigration</option>
               </select>
             </div>
-            <div className="form-check">
+            <div className="form-check mb-3">
               <input
                 className="form-check-input"
                 type="checkbox"
@@ -204,11 +202,14 @@ const IssueContentAEP = (props) => {
                 ADP Available
               </label>
             </div>
-            <span className='d-flex justify-content-center mt-2'>
-            <button type="submit" className="btn btn-success d-flex align-items-center gap-1">
-              Submit <Save size={18} />
-            </button>
-            </span>
+            <div className="d-flex justify-content-center mt-2">
+              <button
+                type="submit"
+                className="btn btn-success d-flex align-items-center gap-1"
+              >
+                Submit <Save size={18} />
+              </button>
+            </div>
           </form>
         </>
       )}

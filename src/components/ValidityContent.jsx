@@ -5,10 +5,11 @@ import ValidityContentRadio from './ValidityContentRadio';
 const ValidityContent = (props) => {
   const [employees, setEmployees] = useState([]);
   const [aeps, setAEPs] = useState([]);
+  const [avps, setAVPs] = useState([]); // State for AVPs
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
 
-  // Function to fetch employee and AEP details from the API
+  // Function to fetch employee, AEP, and AVP details from the API
   const fetchEmployeesAndAEPs = async () => {
     setLoading(true);
     try {
@@ -19,6 +20,7 @@ const ValidityContent = (props) => {
       if (data.success) {
         setEmployees(data.data.users);
         setAEPs(data.data.aeps);
+        setAVPs(data.data.avps); // Set AVP data
       }
     } catch (error) {
       console.error('Error fetching employee and AEP data:', error);
@@ -81,15 +83,8 @@ const ValidityContent = (props) => {
   // Combine the arrays, with expiring soon items first
   const sortedData = [...expiringSoonItems, ...notExpiringSoonItems];
 
-  // Placeholder data for AVPs (replace with actual data fetching if available)
-  const avpData = [
-    { AVPId: 'AVP-001', expiry: '2024-12-25' },
-    { AVPId: 'AVP-002', expiry: '2025-02-20' },
-    { AVPId: 'AVP-003', expiry: '2025-03-05' },
-  ];
-
   // Filter AVPs based on the search term
-  const filteredAVPs = avpData.filter((avp) =>
+  const filteredAVPs = avps.filter((avp) =>
     avp.AVPId.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -219,19 +214,23 @@ const ValidityContent = (props) => {
             <thead>
               <tr>
                 <th>AVP ID</th>
+                <th>Name</th>
                 <th>AVP Expiry Date</th>
               </tr>
             </thead>
             <tbody>
               {filteredAVPs.length > 0 ? (
                 filteredAVPs.map((avp) => {
-                  const expiryClass = isExpiringSoon(avp.expiry)
+                  const expiryClass = isExpiringSoon(avp.AVPValidity)
                     ? 'text-danger'
                     : 'text-success';
                   return (
                     <tr key={avp.AVPId}>
                       <td>{avp.AVPId}</td>
-                      <td className={expiryClass}>{formatDate(avp.expiry)}</td>
+                      <td>{avp.Name}</td>
+                      <td className={expiryClass}>
+                        {formatDate(avp.AVPValidity)}
+                      </td>
                     </tr>
                   );
                 })

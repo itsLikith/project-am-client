@@ -30,7 +30,7 @@ const IssueContentADP = (props) => {
       ADPId: formData.adpNumber,
       ADPValidity: formData.aepexpirydate,
       DateofIssue: formData.aeprenewaldate,
-      AuthorizedBy: formData.authorizedBy, // Use the value from formData
+      AuthorizedBy: formData.authorizedBy,
       Name: 'Mayank',
       Designation: 'CTO',
       Organization: 'AAI',
@@ -73,11 +73,10 @@ const IssueContentADP = (props) => {
     <div>
       {props.selected === 'adp' ? (
         <>
-          <span className="h6 text-info">Issue ADP</span>
-          <br />
+          <h6 className="text-info">Issue ADP</h6>
           <form className="container-fluid p-4" onSubmit={handleSubmit}>
-            <div className="row">
-              <div className="col-md-6 mb-3">
+            <div className="row mb-3">
+              <div className="col-md-6">
                 <input
                   type="text"
                   className="form-control"
@@ -88,7 +87,7 @@ const IssueContentADP = (props) => {
                   onChange={handleChange}
                 />
               </div>
-              <div className="col-md-6 mb-3">
+              <div className="col-md-6">
                 <input
                   type="text"
                   className="form-control"
@@ -99,77 +98,82 @@ const IssueContentADP = (props) => {
                   onChange={handleChange}
                 />
               </div>
-              <div className="row">
-                <div className="col-md-12 mb-3">
+            </div>
+            <div className="row mb-3">
+              <div className="col-md-12">
+                <input
+                  type="text"
+                  className="form-control"
+                  name="aepNumber"
+                  placeholder="Enter AEP number"
+                  required
+                  value={formData.aepNumber}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+            <div className="row mb-3">
+              <div className="col-md-6">
+                <div className="form-control">
+                  <label htmlFor="aeprenewaldate">Enter renewal date:</label>
                   <input
-                    type="text"
+                    type="date"
                     className="form-control"
-                    name="aepNumber"
-                    placeholder="Enter AEP number"
+                    name="aeprenewaldate"
                     required
-                    value={formData.aepNumber}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="col-md-6 mb-3">
-                  <div className="form-control">
-                    <label htmlFor="">Enter renewal date: </label>
-                    <input
-                      type="date"
-                      className="form-control"
-                      name="aeprenewaldate"
-                      required
-                      value={formData.aeprenewaldate}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6 mb-3">
-                  <div className="form-control">
-                    <label htmlFor="">Enter expiry date: </label>
-                    <input
-                      type="date"
-                      className="form-control"
-                      name="aepexpirydate"
-                      required
-                      value={formData.aepexpirydate}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-6 mb-3">
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="authorizedBy"
-                    placeholder="Enter authorized by"
-                    required
-                    value={formData.authorizedBy} // Bind value
+                    value={formData.aeprenewaldate}
                     onChange={handleChange}
                   />
                 </div>
               </div>
-              <div className="row">
-                <div className="col-md-12">
-                  <textarea
+              <div className="col-md-6">
+                <div className="form-control">
+                  <label htmlFor="aepexpirydate">Enter expiry date:</label>
+                  <input
+                    type="date"
                     className="form-control"
-                    name="aepareas"
-                    rows="3"
-                    placeholder="Enter valid areas"
-                    value={formData.aepareas}
+                    name="aepexpirydate"
+                    required
+                    value={formData.aepexpirydate}
                     onChange={handleChange}
-                  ></textarea>
+                  />
                 </div>
               </div>
             </div>
-            <span className="d-flex justify-content-center mt-3">
+            <div className="row mb-3">
+              <div className="col-md-12">
+                <input
+                  type="text"
+                  className="form-control"
+                  name="authorizedBy"
+                  placeholder="Enter authorized by"
+                  required
+                  value={formData.authorizedBy}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+            <div className="row mb-3">
+              <div className="col-md-12">
+                <textarea
+                  className="form-control"
+                  name="aepareas"
+                  rows="3"
+                  placeholder="Enter valid areas"
+                  value={formData.aepareas}
+                  onChange={handleChange}
+                ></textarea>
+              </div>
+            </div>
+            <div className="d-flex justify-content-center mt-3">
               <button
                 type="submit"
                 className="btn btn-success d-flex align-items-center gap-1"
               >
-                Submit<Save size={18} />
+                Submit
+                <Save size={18} />
               </button>
-            </span>
+            </div>
           </form>
         </>
       ) : null}
