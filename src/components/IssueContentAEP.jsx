@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Save } from 'lucide-react';
+import axios from 'axios';
 
 const IssueContentAEP = (props) => {
   const navigate = useNavigate();
@@ -55,7 +56,6 @@ const IssueContentAEP = (props) => {
     } catch (error) {
       console.error('Error submitting form:', error);
     } finally {
-      // Reset the form data after submission
       setFormData({
         aepNumber: '',
         employeeName: '',
@@ -80,118 +80,135 @@ const IssueContentAEP = (props) => {
           <form onSubmit={handleSubmit} className="container-fluid p-4">
             <div className="row">
               <div className="col-md-6 mb-3">
+                <label htmlFor="aepNumber">AEP Number</label>
                 <input
                   type="text"
                   className="form-control"
+                  id="aepNumber"
                   name="aepNumber"
-                  placeholder="Enter AEP number"
-                  required
                   value={formData.aepNumber}
                   onChange={handleChange}
+                  required
                 />
               </div>
               <div className="col-md-6 mb-3">
+                <label htmlFor="employeeName">Employee Name</label>
                 <input
                   type="text"
                   className="form-control"
+                  id="employeeName"
                   name="employeeName"
-                  placeholder="Enter employee name"
-                  required
                   value={formData.employeeName}
                   onChange={handleChange}
+                  required
                 />
               </div>
-              <div className="col-md-12 mb-3">
-                <label>Select Locations:</label>
-                <select
-                  className="form-control"
-                  name="locations"
-                  required
-                  value={formData.locations}
-                  onChange={handleChange}
-                >
-                  <option value="" disabled>
-                    Select Location
-                  </option>
-                  <option value="ATC">ATC</option>
-                  <option value="Main">Main</option>
-                  <option value="CNS">CNS</option>
-                </select>
-              </div>
+            </div>
+            <div className="row">
               <div className="col-md-6 mb-3">
-                <label>Date of Issue:</label>
+                <label htmlFor="dateOfIssue">Date of Issue</label>
                 <input
                   type="date"
                   className="form-control"
+                  id="dateOfIssue"
                   name="dateOfIssue"
-                  required
                   value={formData.dateOfIssue}
                   onChange={handleChange}
+                  required
                 />
               </div>
               <div className="col-md-6 mb-3">
-                <label>Date of Expiry:</label>
+                <label htmlFor="dateOfExpiry">Date of Expiry</label>
                 <input
                   type="date"
                   className="form-control"
+                  id="dateOfExpiry"
                   name="dateOfExpiry"
-                  required
                   value={formData.dateOfExpiry}
                   onChange={handleChange}
+                  required
                 />
               </div>
+            </div>
+            <div className="row">
               <div className="col-md-6 mb-3">
+                <label htmlFor="issuedBy">Issued By</label>
                 <input
                   type="text"
                   className="form-control"
+                  id="issuedBy"
                   name="issuedBy"
-                  placeholder="Issued By"
-                  required
                   value={formData.issuedBy}
                   onChange={handleChange}
+                  required
                 />
               </div>
               <div className="col-md-6 mb-3">
+                <label htmlFor="status">Status</label>
                 <select
                   className="form-control"
+                  id="status"
                   name="status"
-                  required
                   value={formData.status}
                   onChange={handleChange}
+                  required
                 >
                   <option value="" disabled>
                     Select Status
                   </option>
                   <option value="Active">Active</option>
                   <option value="Inactive">Inactive</option>
-                  <option value="Block">Block</option>
                 </select>
               </div>
             </div>
-            <div className="col-md-12 mt-3">
-              <textarea
+            <div className="col-md-12 mb-3">
+              <label>Select Locations:</label>
+              <select
                 className="form-control"
-                rows="3"
-                name="validAreas"
-                placeholder="Enter valid areas"
-                value={formData.validAreas}
+                name="locations"
+                required
+                value={formData.locations}
                 onChange={handleChange}
-              ></textarea>
+              >
+                <option value="" disabled>
+                  Select Location
+                </option>
+                <option value="A">Arrival Hall</option>
+                <option value="D">Depature Hall</option>
+                <option value="T">Terminal Building</option>
+                <option value="S">Terminal Builnding</option>
+                <option value="P">Apron Area</option>
+                <option value="B">Baggage Handling</option>
+                <option value="F">Air Traffic Control except ATC tower</option>
+                <option value="Ft">ATC tower</option>
+                <option value="C">
+                  Cargo Terminal without Cargo SHA-Domestic & International
+                </option>
+                <option value="Ci">
+                  Cargo Terminal without Cargo SHA-Intl
+                </option>
+                <option value="Cs">Cargo SHA pertainig to C or Cd or Ci</option>
+                <option value="I">Boarding Gates to Immigration</option>
+              </select>
             </div>
-            <div className="col-md-12 mt-3">
-              <label>
-                <input
-                  type="checkbox"
-                  name="adpAvailable"
-                  checked={formData.adpAvailable}
-                  onChange={handleChange}
-                />{' '}
+            <div className="form-check">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                id="adpAvailable"
+                name="adpAvailable"
+                checked={formData.adpAvailable}
+                onChange={handleChange}
+              />
+              <label className="form-check-label" htmlFor="adpAvailable">
                 ADP Available
               </label>
             </div>
-            <p className="mt-3 text-center">
-              <input type="submit" className="btn btn-success" value="Submit" />
-            </p>
+            <span className='d-flex justify-content-center mt-2'>
+            <button type="submit" className="btn btn-success d-flex align-items-center gap-1">
+              Submit <Save size={18} />
+            </button>
+            </span>
           </form>
         </>
       )}

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Save } from 'lucide-react';
 import axios from 'axios';
 
 const IssueContentAVP = (props) => {
@@ -202,9 +203,9 @@ const IssueContentAVP = (props) => {
                 ></textarea>
               </div>
             </div>
-            <p className="mt-3 text-center">
-              <input type="submit" className="btn btn-success" value="Submit" />
-            </p>
+            <span className='d-flex justify-content-center mt-3'>
+              <button className='btn btn-success d-flex align-items-center gap-1'>Submit <Save size={18} /></button>
+            </span>
           </form>
         </>
       ) : null}

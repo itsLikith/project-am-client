@@ -17,14 +17,34 @@ const AppRoutes = () => {
         <Route path="/security/home" element={<HomePage />} />
         <Route path="/admin/home" element={<AdminHome />} />
 
+        {/* Admin Employee Configuration Routes */}
         <Route
           path="/admin/employee"
           element={<AdminHome viewContent="employee" />}
         />
         <Route
+          path="/admin/employee/aep&adp"
+          element={<AdminHome viewContent="employee" employeeView="adp&aep" />}
+        />
+        <Route
+          path="/admin/employee/avp"
+          element={<AdminHome viewContent="employee" employeeView="avp" />}
+        />
+
+        {/* Admin Validity Configuration Routes */}
+        <Route
           path="/admin/validity"
           element={<AdminHome viewContent="validity" />}
         />
+        <Route
+          path="/admin/validity/aep&adp"
+          element={<AdminHome viewContent="validity" validityView="aep&adp" />}
+        />
+        <Route
+          path="/admin/validity/avp"
+          element={<AdminHome viewContent="validity" validityView="avp" />}
+        />
+
         <Route
           path="/admin/issue"
           element={<AdminHome viewContent="issue" selected="none" />}
