@@ -5,49 +5,52 @@ import { QRCodeSVG } from 'qrcode.react';
 
 const GenerateQrAEP = () => {
   const [adpAepId, setAdpAepId] = useState('');
-  const [qrCodeValue, setQrCodeValue] = useState(''); // State to hold QR code data
+  const [qrCodeValue, setQrCodeValue] = useState('');
   const [message, setMessage] = useState('');
-  const qrCodeRef = useRef(); // Ref to access the QR code element
+  const qrCodeRef = useRef();
 
   const handleInputChange = (event) => {
     setAdpAepId(event.target.value);
   };
 
   const handleGenerateClick = async () => {
-    setMessage(''); // Reset message on new generation
+    setMessage('');
     try {
       const response = await axios.get(
-        'https://accessmatrix.vercel.app/api/admin/AEP/' + adpAepId
+        'https://accessmatrix.vercel.app/api/admin/AEP/getADPs/' + adpAepId
       );
 
-      // Log the entire response to inspect its structure
-      console.log('API Response:', response.data);
-
-      // Check if AEP exists in the response
       if (
         !response.data.data ||
-        !response.data.data.AEP ||
+        !response.data.data.AEPs[0]?.AEPId ||
         !response.data.success
       ) {
         setMessage('AEP does not exist!');
-        return; // Exit if AEP does not exist
+        return;
       }
 
-      const id = response.data.data.AEP._id;
-      const encoded = await axios.get(
-        'https://accessmatrix.vercel.app/api/utils/create/' + id
-      );
+      const adp = response.data.data.AEPs[0]?.ADP[0]?._id;
+      const aep = response.data.data?.AEPs[0]?._id;
+      const QRtemp = {
+        data: {
+          ...(aep && { aep }),
+          ...(adp && { adp }),
+        },
+      };
 
-      // Ensure the code is retrieved correctly
-      const code = encoded.data.data.code;
-      if (!code) {
-        throw new Error('Encoded data code is not available.');
+      if (QRtemp.data.aep) {
+        const encoded = await axios.get(
+          'https://accessmatrix.vercel.app/api/utils/create/' + QRtemp.data.aep
+        );
+        QRtemp.data.aep = encoded.data.data.code;
       }
-
-      // Construct the full URL for the QR code
-      const qrInput = `https://accessmatrix.vercel.app/api/utils/verify/${code}`;
-      setQrCodeValue(qrInput); // Set the QR code value to the full URL
-      console.log('QR Code URL:', qrInput);
+      if (QRtemp.data.adp) {
+        const encoded = await axios.get(
+          'https://accessmatrix.vercel.app/api/utils/create/' + QRtemp.data.adp
+        );
+        QRtemp.data.adp = encoded.data.data.code;
+      }
+      setQrCodeValue(JSON.stringify(QRtemp));
     } catch (error) {
       console.error('Error generating QR code:', error.message);
       setMessage(
@@ -61,13 +64,11 @@ const GenerateQrAEP = () => {
     const svg = qrCodeRef.current.querySelector('svg');
     if (!svg) {
       setMessage('No QR code available for download.');
-      return; // Exit if no QR code is available
+      return;
     }
 
     const svgData = new XMLSerializer().serializeToString(svg);
     const img = new Image();
-
-    // Convert SVG to Data URL
     const svgBlob = new Blob([svgData], {
       type: 'image/svg+xml;charset=utf-8',
     });
@@ -80,13 +81,12 @@ const GenerateQrAEP = () => {
       ctx.drawImage(img, 0, 0);
       const pngUrl = canvas.toDataURL('image/png');
 
-      // Create a link to download the image
       const link = document.createElement('a');
+      const fileName = `${adpAepId}.png`;
       link.href = pngUrl;
-      link.download = 'qr_code.png';
+      link.download = fileName;
       link.click();
 
-      // Clean up
       URL.revokeObjectURL(url);
     };
 
@@ -120,7 +120,7 @@ const GenerateQrAEP = () => {
         ref={qrCodeRef}
       >
         {qrCodeValue && (
-          <QRCodeSVG value={qrCodeValue} size={256} marginSize={6} /> // Display QR code
+          <QRCodeSVG value={qrCodeValue} size={256} marginSize={6} />
         )}
       </div>
       <p className="text-center text-warning">{message}</p>

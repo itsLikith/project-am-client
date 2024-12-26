@@ -17,56 +17,93 @@ const RecordsContainer = styled.div`
   .text-danger {
     color: red; /* Adjust color as needed */
   }
+
+  .date-filter {
+    display: flex;
+    gap: 10px;
+    margin-top: 1rem;
+  }
 `;
 
 const RecordsContent = () => {
-  const [records, setRecords] = useState([]);
+  const [logs, setLogs] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
-  // Function to fetch records from the API
-  const fetchRecords = async () => {
-    setLoading(true); // Set loading to true before fetching
+  // Function to fetch logs from the API
+  const fetchLogs = async () => {
+    setLoading(true);
     try {
       const response = await axios.get(
-        'https://accessmatrix.vercel.app/api/users/employees/all'
+        'https://accessmatrix.vercel.app/api/logs/all' // Replace with your actual endpoint for logs
       );
       if (response.data.success) {
-        const processedRecords = response.data.data.aeps.map((aep) => ({
-          AEPId: aep.AEPId,
-          EmployeeName: aep.EmployeeName || 'N/A',
-          DateofIssue: new Date(aep.DateofIssue).toLocaleDateString(),
-          DateofExpiry: new Date(aep.DateofExpiry).toLocaleDateString(),
-          ADPs: aep.ADP || [],
+        const processedLogs = response.data.data.map((log) => ({
+          validatedId: log.validatedId,
+          Id: log.Id,
+          entryTime: new Date(log.entryTime).toLocaleString(),
+          exitTime: new Date(log.exitTime).toLocaleString(),
         }));
-        setRecords(processedRecords);
+        setLogs(processedLogs);
       }
     } catch (error) {
-      console.error('Error fetching records:', error);
+      console.error('Error fetching logs:', error);
     } finally {
-      setLoading(false); // Set loading to false after fetching
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchRecords();
+    fetchLogs();
   }, []);
 
   // Handle search functionality
-  const filteredRecords = records.filter((record) => {
+  const filteredLogs = logs.filter((log) => {
     const searchLower = searchTerm.toLowerCase();
+    const logEntryTime = new Date(log.entryTime);
+    const logExitTime = new Date(log.exitTime);
+    const isWithinDateRange =
+      (!startDate || logEntryTime >= new Date(startDate)) &&
+      (!endDate || logEntryTime <= new Date(endDate));
+
     return (
-      record.EmployeeName.toLowerCase().includes(searchLower) ||
-      record.AEPId.toString().includes(searchLower)
+      (log.validatedId.toLowerCase().includes(searchLower) ||
+        log.Id.toString().includes(searchLower)) &&
+      isWithinDateRange
     );
   });
 
   return (
     <RecordsContainer>
       <span className="h5 text-danger d-flex align-items-center gap-1">
-        Records
+        Logs
         <LibraryBig size={21} />
       </span>
+
+      <div className="row">
+        <div className="col-md-6">
+          <label htmlFor="">Start Date:</label>
+          <input
+            type="date"
+            className="form-control"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+          />
+        </div>
+        <div className="col-md-6">
+          <label htmlFor="">End Date:</label>
+          <input
+            type="date"
+            className="form-control"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            placeholder="End Date"
+          />
+        </div>
+      </div>
+
       <span className="input-group mt-2">
         <span className="input-group-text">
           <Search size={21} />
@@ -74,13 +111,13 @@ const RecordsContent = () => {
         <input
           type="text"
           className="form-control"
-          placeholder="Search Employee or AEP ID"
+          placeholder="Search Validated ID or Log ID"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </span>
 
-      {loading ? ( // Conditional rendering for loading
+      {loading ? (
         <div className="text-center">
           <div className="spinner-border m-3" role="status">
             <span className="visually-hidden">Loading...</span>
@@ -90,41 +127,21 @@ const RecordsContent = () => {
         <table className="table mt-3">
           <thead>
             <tr>
-              <th>AEP ID</th>
-              <th>Employee Name</th>
-              <th>Date of Issue</th>
-              <th>Date of Expiry</th>
-              <th>ADP ID</th>
-              <th>Authorized By</th>
-              <th>Designation</th>
-              <th>Organization</th>
+              <th>Validated ID</th>
+              <th>Log ID</th>
+              <th>Entry Time</th>
+              <th>Exit Time</th>
             </tr>
           </thead>
           <tbody>
-            {filteredRecords.flatMap((record) =>
-              record.ADPs.length > 0 ? (
-                record.ADPs.map((adp) => (
-                  <tr key={adp._id}>
-                    <td>{record.AEPId}</td>
-                    <td>{record.EmployeeName}</td>
-                    <td>{record.DateofIssue}</td>
-                    <td>{record.DateofExpiry}</td>
-                    <td>{adp.ADPId}</td>
-                    <td>{adp.AuthorizedBy}</td>
-                    <td>{adp.Designation}</td>
-                    <td>{adp.Organization}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr key={record.AEPId}>
-                  <td>{record.AEPId}</td>
-                  <td>{record.EmployeeName}</td>
-                  <td>{record.DateofIssue}</td>
-                  <td>{record.DateofExpiry}</td>
-                  <td colSpan="4">No ADPs available</td>
-                </tr>
-              )
-            )}
+            {filteredLogs.map((log) => (
+              <tr key={log.Id}>
+                <td>{log.validatedId}</td>
+                <td>{log.Id}</td>
+                <td>{log.entryTime}</td>
+                <td>{log.exitTime}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       )}

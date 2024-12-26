@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Save } from 'lucide-react';
+import { Save, Locate } from 'lucide-react';
 import axios from 'axios';
 
 const IssueContentAEP = (props) => {
@@ -12,16 +12,34 @@ const IssueContentAEP = (props) => {
     dateOfExpiry: '',
     issuedBy: '',
     status: '',
-    locations: '',
+    locations: [], // Change to an array
     adpAvailable: false,
   });
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value,
-    });
+
+    if (name === 'locations') {
+      // Handle checkbox group for locations
+      if (checked) {
+        setFormData((prevData) => ({
+          ...prevData,
+          locations: [...prevData.locations, value], // Add selected location
+        }));
+      } else {
+        setFormData((prevData) => ({
+          ...prevData,
+          locations: prevData.locations.filter(
+            (location) => location !== value
+          ), // Remove unselected location
+        }));
+      }
+    } else {
+      setFormData({
+        ...formData,
+        [name]: type === 'checkbox' ? checked : value,
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -29,7 +47,7 @@ const IssueContentAEP = (props) => {
 
     const packet = {
       AEPId: formData.aepNumber,
-      Locations: [formData.locations], // Ensure this is an array
+      Locations: formData.locations, // Directly use the array
       EmployeeName: formData.employeeName,
       DateofIssue: formData.dateOfIssue,
       DateofExpiry: formData.dateOfExpiry,
@@ -60,7 +78,7 @@ const IssueContentAEP = (props) => {
         dateOfExpiry: '',
         issuedBy: '',
         status: '',
-        locations: '',
+        locations: [], // Reset to an empty array
         adpAvailable: false,
       });
     }
@@ -159,37 +177,56 @@ const IssueContentAEP = (props) => {
               </div>
             </div>
             <div className="mb-3">
-              <select
-                className="form-control"
-                name="locations"
-                required
-                value={formData.locations}
-                onChange={handleChange}
-              >
-                <option value="" disabled>
-                  Select Location
-                </option>
-                <option value="A">Arrival Hall</option>
-                <option value="D">Departure Hall</option>
-                <option value="T">Terminal Building</option>
-                <option value="S">Terminal Building</option>
-                <option value="P">Apron Area</option>
-                <option value="B">Baggage Handling</option>
-                <option value="F">Air Traffic Control except ATC tower</option>
-                <option value="Ft">ATC tower</option>
-                <option value="C">
-                  Cargo Terminal without Cargo SHA-Domestic & International
-                </option>
-                <option value="Ci">
-                  Cargo Terminal without Cargo SHA-Intl
-                </option>
-                <option value="Cs">
-                  Cargo SHA pertaining to C or Cd or Ci
-                </option>
-                <option value="I">Boarding Gates to Immigration</option>
-              </select>
+              <label className="text-warning mb-2">
+                Select Locations:
+                <Locate size={18} />
+              </label>
+              <div>
+                {[
+                  { value: 'A', label: 'Arrival Hall' },
+                  { value: 'D', label: 'Departure Hall' },
+                  { value: 'T', label: 'Terminal Building' },
+                  { value: 'S', label: 'Terminal Building' },
+                  { value: 'P', label: 'Apron Area' },
+                  { value: 'B', label: 'Baggage Handling' },
+                  { value: 'F', label: 'Air Traffic Control except ATC tower' },
+                  { value: 'Ft', label: 'ATC tower' },
+                  {
+                    value: 'C',
+                    label:
+                      'Cargo Terminal without Cargo SHA-Domestic & International',
+                  },
+                  {
+                    value: 'Ci',
+                    label: 'Cargo Terminal without Cargo SHA-Intl',
+                  },
+                  {
+                    value: 'Cs',
+                    label: 'Cargo SHA pertaining to C or Cd or Ci',
+                  },
+                  { value: 'I', label: 'Boarding Gates to Immigration' },
+                ].map((location) => (
+                  <div key={location.value} className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id={location.value}
+                      name="locations"
+                      value={location.value}
+                      checked={formData.locations.includes(location.value)} // Check if selected
+                      onChange={handleChange}
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor={location.value}
+                    >
+                      {location.label}
+                    </label>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="form-check mb-3">
+            <div className="form-check mb-3 d-flex justify-content-center gap-2">
               <input
                 className="form-check-input"
                 type="checkbox"

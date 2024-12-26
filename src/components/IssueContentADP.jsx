@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Save } from 'lucide-react';
+import SuccessAlert from './SuccessAlert';
 
 const IssueContentADP = (props) => {
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ const IssueContentADP = (props) => {
     aepareas: '',
     authorizedBy: '',
   });
+  const [isPopupOpen, setPopupOpen] = useState(false); // State for popup
+  const [popupMessage, setPopupMessage] = useState(''); // State for popup message
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -50,8 +53,8 @@ const IssueContentADP = (props) => {
       );
       console.log(response.data);
       if (response.data.success) {
-        alert('ADP created');
-        navigate('/admin/home/issue/adp');
+        setPopupMessage('ADP created successfully!'); // Set success message
+        setPopupOpen(true); // Open popup
         // Reset form data after submission
         setFormData({
           adpNumber: '',
@@ -62,10 +65,14 @@ const IssueContentADP = (props) => {
           aepareas: '',
           authorizedBy: '',
         });
+        setTimeout(() => {
+          navigate('/admin/home/issue/adp');
+        }, 2000); // Navigate after 2 seconds
       }
     } catch (error) {
       console.error('Error submitting form:', error);
-      alert('Error submitting form. Please try again.'); // User feedback on error
+      setPopupMessage('Error submitting form. Please try again.'); // Set error message
+      setPopupOpen(true); // Open popup
     }
   };
 
@@ -75,6 +82,7 @@ const IssueContentADP = (props) => {
         <>
           <h6 className="text-info">Issue ADP</h6>
           <form className="container-fluid p-4" onSubmit={handleSubmit}>
+            {/* Form fields remain unchanged */}
             <div className="row mb-3">
               <div className="col-md-6">
                 <input
@@ -177,6 +185,8 @@ const IssueContentADP = (props) => {
           </form>
         </>
       ) : null}
+      {/* Popup Component */}
+      {isPopupOpen && <SuccessAlert message="ADP created successfully" />}
     </div>
   );
 };

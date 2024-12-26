@@ -75,6 +75,10 @@ const AppRoutes = () => {
           element={<AdminSettings selected="authorize" task="block" />}
         />
         <Route
+          path='/admin/settings/authorize/unblock'
+          element={<AdminSettings selected="authorize" task="unblock" />}
+        />
+        <Route
           path="/admin/settings/authorize/"
           element={<AdminSettings selected="" task="" />}
         />

@@ -17,13 +17,11 @@ const GenerateQrAVP = () => {
     setMessage(''); // Reset message on new generation
     try {
       const response = await axios.get(
-        `https://accessmatrix.vercel.app/api/admin/AVP/${avpId}` // Replace with your actual endpoint
+        `https://accessmatrix.vercel.app/api/AVP/${avpId}` // Replace with your actual endpoint
       );
 
-      // Log the entire response to inspect its structure
       console.log('API Response:', response.data);
 
-      // Check if AVP exists in the response
       if (
         !response.data.data ||
         !response.data.data.AVP ||
@@ -38,16 +36,16 @@ const GenerateQrAVP = () => {
         `https://accessmatrix.vercel.app/api/utils/create/${id}` // Replace with your actual endpoint
       );
 
-      // Ensure the code is retrieved correctly
-      const code = encoded.data.data.code;
-      if (!code) {
+      const avp = encoded.data.data.code;
+      if (!avp) {
         throw new Error('Encoded data code is not available.');
       }
-
-      // Construct the full URL for the QR code
-      const qrInput = `https://your-api-endpoint.com/api/utils/verify/${code}`; // Replace with your actual endpoint
-      setQrCodeValue(qrInput); // Set the QR code value to the full URL
-      console.log('QR Code URL:', qrInput);
+      const finalPacket = {
+        data: {
+          ...(avp && { avp }),
+        },
+      };
+      setQrCodeValue(JSON.stringify(finalPacket)); // Set the QR code value to the full URL
     } catch (error) {
       console.error('Error generating QR code:', error.message);
       setMessage(
@@ -80,10 +78,10 @@ const GenerateQrAVP = () => {
       ctx.drawImage(img, 0, 0);
       const pngUrl = canvas.toDataURL('image/png');
 
-      // Create a link to download the image
       const link = document.createElement('a');
+      const fileName = `${avpId}.png`;
       link.href = pngUrl;
-      link.download = 'qr_code.png';
+      link.download = fileName;
       link.click();
 
       // Clean up
