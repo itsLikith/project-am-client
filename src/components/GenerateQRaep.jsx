@@ -17,15 +17,16 @@ const GenerateQrAEP = () => {
     setMessage('');
     try {
       const response = await axios.get(
-        'https://accessmatrix.vercel.app/api/admin/AEP/getADPs/' + adpAepId
+        process.env.REACT_APP_API_URL + '/admin/AEP/getADPs/' + adpAepId
       );
-
       if (
         !response.data.data ||
         !response.data.data.AEPs[0]?.AEPId ||
         !response.data.success
       ) {
-        setMessage('AEP does not exist!');
+        const message = response.data.message || 'AEP does not exist!';
+        console.log(message);
+        throw new Error(message);
         return;
       }
 
@@ -40,22 +41,23 @@ const GenerateQrAEP = () => {
 
       if (QRtemp.data.aep) {
         const encoded = await axios.get(
-          'https://accessmatrix.vercel.app/api/utils/create/' + QRtemp.data.aep
+          process.env.REACT_APP_API_URL + '/utils/create/' + QRtemp.data.aep
         );
         QRtemp.data.aep = encoded.data.data.code;
       }
       if (QRtemp.data.adp) {
         const encoded = await axios.get(
-          'https://accessmatrix.vercel.app/api/utils/create/' + QRtemp.data.adp
+          process.env.REACT_APP_API_URL + '/utils/create/' + QRtemp.data.adp
         );
         QRtemp.data.adp = encoded.data.data.code;
       }
       setQrCodeValue(JSON.stringify(QRtemp));
     } catch (error) {
-      console.error('Error generating QR code:', error.message);
-      setMessage(
-        'An error occurred while generating the QR code. The AEP might not be existing'
-      );
+      const message =
+        error.response.data.message ||
+        'An error occurred while generating the QR code. The AEP might not be existing';
+
+      setMessage(message);
     }
   };
 

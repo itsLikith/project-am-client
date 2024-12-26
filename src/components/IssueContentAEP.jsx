@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Save, Locate } from 'lucide-react';
 import axios from 'axios';
+import SuccessAlert from './SuccessAlert'; // Import SuccessAlert component
+import FailureAlert from './FailureAlert'; // Import FailureAlert component
 
 const IssueContentAEP = (props) => {
   const navigate = useNavigate();
@@ -12,26 +14,29 @@ const IssueContentAEP = (props) => {
     dateOfExpiry: '',
     issuedBy: '',
     status: '',
-    locations: [], // Change to an array
+    locations: [],
     adpAvailable: false,
   });
+
+  // Alert state variables
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertType, setAlertType] = useState('');
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
     if (name === 'locations') {
-      // Handle checkbox group for locations
       if (checked) {
         setFormData((prevData) => ({
           ...prevData,
-          locations: [...prevData.locations, value], // Add selected location
+          locations: [...prevData.locations, value],
         }));
       } else {
         setFormData((prevData) => ({
           ...prevData,
           locations: prevData.locations.filter(
             (location) => location !== value
-          ), // Remove unselected location
+          ),
         }));
       }
     } else {
@@ -47,7 +52,7 @@ const IssueContentAEP = (props) => {
 
     const packet = {
       AEPId: formData.aepNumber,
-      Locations: formData.locations, // Directly use the array
+      Locations: formData.locations,
       EmployeeName: formData.employeeName,
       DateofIssue: formData.dateOfIssue,
       DateofExpiry: formData.dateOfExpiry,
@@ -61,15 +66,19 @@ const IssueContentAEP = (props) => {
         'https://accessmatrix.vercel.app/api/admin/AEP/',
         packet
       );
-      console.log(response.data);
       if (response.data.success) {
+        setAlertMessage('AEP created successfully!');
+        setAlertType('success');
         navigate('/admin/home/issue/aep');
-        alert('AEP created');
       } else {
-        console.error('Error:', response.data.message);
+        setAlertMessage('Failed to create AEP: ' + response.data.message);
+        setAlertType('failure');
       }
     } catch (error) {
-      console.error('Error submitting form:', error);
+      setAlertMessage(
+        '' + (error.response?.data.message || 'An error occurred')
+      );
+      setAlertType('failure');
     } finally {
       setFormData({
         aepNumber: '',
@@ -78,7 +87,7 @@ const IssueContentAEP = (props) => {
         dateOfExpiry: '',
         issuedBy: '',
         status: '',
-        locations: [], // Reset to an empty array
+        locations: [],
         adpAvailable: false,
       });
     }
@@ -101,6 +110,7 @@ const IssueContentAEP = (props) => {
                   onChange={handleChange}
                   placeholder="Enter AEP Number"
                   required
+                  autoComplete
                 />
               </div>
               <div className="col-md-6">
@@ -113,6 +123,7 @@ const IssueContentAEP = (props) => {
                   onChange={handleChange}
                   placeholder="Enter Employee Name"
                   required
+                  autoComplete
                 />
               </div>
             </div>
@@ -171,8 +182,8 @@ const IssueContentAEP = (props) => {
                   <option value="" disabled>
                     Select Status
                   </option>
-                  <option value="Active">Active</option>
-                  <option value="Inactive">Inactive</option>
+                  <option value="ACTIVE">Active</option>
+                  <option value="INACTIVE">Inactive</option>
                 </select>
               </div>
             </div>
@@ -213,7 +224,7 @@ const IssueContentAEP = (props) => {
                       id={location.value}
                       name="locations"
                       value={location.value}
-                      checked={formData.locations.includes(location.value)} // Check if selected
+                      checked={formData.locations.includes(location.value)}
                       onChange={handleChange}
                     />
                     <label
@@ -248,6 +259,19 @@ const IssueContentAEP = (props) => {
               </button>
             </div>
           </form>
+
+          {/* Alert rendering */}
+          <div
+            style={{
+              position: 'absolute',
+              left: '50%',
+              top: '50%',
+              transform: 'translate(-50%,-50%)',
+            }}
+          >
+            {alertType === 'success' && <SuccessAlert message={alertMessage} />}
+            {alertType === 'failure' && <FailureAlert message={alertMessage} />}
+          </div>
         </>
       )}
     </div>

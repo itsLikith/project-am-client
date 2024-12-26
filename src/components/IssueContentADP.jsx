@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Save } from 'lucide-react';
 import SuccessAlert from './SuccessAlert';
+import FailureAlert from './FailureAlert';
 
 const IssueContentADP = (props) => {
   const navigate = useNavigate();
@@ -15,8 +16,8 @@ const IssueContentADP = (props) => {
     aepareas: '',
     authorizedBy: '',
   });
-  const [isPopupOpen, setPopupOpen] = useState(false); // State for popup
-  const [popupMessage, setPopupMessage] = useState(''); // State for popup message
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertType, setAlertType] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,7 +40,7 @@ const IssueContentADP = (props) => {
       Organization: 'AAI',
       Violation: ['Init'],
       AEPId: formData.aepNumber,
-      status: 'Active',
+      status: 'ACTIVE',
       VehicleType: formData.vehicleType,
       ValidAreas: formData.aepareas,
     };
@@ -53,9 +54,8 @@ const IssueContentADP = (props) => {
       );
       console.log(response.data);
       if (response.data.success) {
-        setPopupMessage('ADP created successfully!'); // Set success message
-        setPopupOpen(true); // Open popup
-        // Reset form data after submission
+        setAlertMessage('ADP created successfully!');
+        setAlertType('success');
         setFormData({
           adpNumber: '',
           vehicleType: '',
@@ -67,12 +67,21 @@ const IssueContentADP = (props) => {
         });
         setTimeout(() => {
           navigate('/admin/home/issue/adp');
-        }, 2000); // Navigate after 2 seconds
+        }, 2000);
+      } else {
+        setAlertMessage('Failed to create ADP: ' + response.data.message);
+        setAlertType('failure');
       }
     } catch (error) {
       console.error('Error submitting form:', error);
-      setPopupMessage('Error submitting form. Please try again.'); // Set error message
-      setPopupOpen(true); // Open popup
+      if (error.response && error.response.data) {
+        setAlertMessage(
+          'Error: ' + error.response.data.message || 'An error occurred'
+        );
+      } else {
+        setAlertMessage('Network error: Please try again later.');
+      }
+      setAlertType('failure');
     }
   };
 
@@ -82,7 +91,6 @@ const IssueContentADP = (props) => {
         <>
           <h6 className="text-info">Issue ADP</h6>
           <form className="container-fluid p-4" onSubmit={handleSubmit}>
-            {/* Form fields remain unchanged */}
             <div className="row mb-3">
               <div className="col-md-6">
                 <input
@@ -93,6 +101,7 @@ const IssueContentADP = (props) => {
                   required
                   value={formData.adpNumber}
                   onChange={handleChange}
+                  autoComplete="off" // Added autocomplete
                 />
               </div>
               <div className="col-md-6">
@@ -104,6 +113,7 @@ const IssueContentADP = (props) => {
                   required
                   value={formData.vehicleType}
                   onChange={handleChange}
+                  autoComplete="off" // Added autocomplete
                 />
               </div>
             </div>
@@ -117,6 +127,7 @@ const IssueContentADP = (props) => {
                   required
                   value={formData.aepNumber}
                   onChange={handleChange}
+                  autoComplete="off" // Added autocomplete
                 />
               </div>
             </div>
@@ -158,6 +169,7 @@ const IssueContentADP = (props) => {
                   required
                   value={formData.authorizedBy}
                   onChange={handleChange}
+                  autoComplete="off" // Added autocomplete
                 />
               </div>
             </div>
@@ -185,8 +197,17 @@ const IssueContentADP = (props) => {
           </form>
         </>
       ) : null}
-      {/* Popup Component */}
-      {isPopupOpen && <SuccessAlert message="ADP created successfully" />}
+      <div
+        style={{
+          position: 'absolute',
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%,-50%)',
+        }}
+      >
+        {alertType === 'success' && <SuccessAlert message={alertMessage} />}
+        {alertType === 'failure' && <FailureAlert message={alertMessage} />}
+      </div>
     </div>
   );
 };

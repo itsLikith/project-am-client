@@ -2,7 +2,13 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import SettingsRadio from '../components/SettingsRadio';
 import '../styles/AdminSettings.css';
-import { ArrowBigLeft, BadgePlus, CircleOff, QrCode,Circle } from 'lucide-react';
+import {
+  ArrowBigLeft,
+  BadgePlus,
+  CircleOff,
+  QrCode,
+  Circle,
+} from 'lucide-react';
 import RenewContent from '../components/RenewContent';
 import BlockContent from '../components/BlockContent';
 import UnblockContent from '../components/UnblockContent';
@@ -74,8 +80,7 @@ const AdminSettings = (props) => {
           </p>
           <UnblockContent />
         </>
-      )
-       : props.selected === 'generateQR' && props.task === 'aep' ? (
+      ) : props.selected === 'generateQR' && props.task === 'aep' ? (
         <>
           <p className="h6 text-info d-flex align-items-center gap-1">
             Generate QR for AEP/ADP

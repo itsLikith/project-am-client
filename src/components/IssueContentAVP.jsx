@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Save } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import SuccessAlert from './SuccessAlert'; // Import SuccessAlert component
+import FailureAlert from './FailureAlert'; // Import FailureAlert component
 
 const IssueContentAVP = (props) => {
   const navigate = useNavigate();
@@ -23,6 +25,10 @@ const IssueContentAVP = (props) => {
     violation: '', // This will be a comma-separated string
   });
 
+  // Alert state variables
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertType, setAlertType] = useState('');
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -33,9 +39,6 @@ const IssueContentAVP = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent the default form submission behavior
-
-    // Log the entered data
-    console.log('Entered Data:', formData);
 
     // Prepare the packet for the API call
     const packet = {
@@ -50,21 +53,21 @@ const IssueContentAVP = (props) => {
     };
 
     try {
+      console.log(packet)
       const response = await axios.post(
         'https://accessmatrix.vercel.app/api/AVP/create',
         packet
       );
 
-      console.log('Response:', response.data); // Handle the response as needed
-
       if (response.data.success) {
-        alert('AVP created');
-        // Optionally, reset the form data after submission
+        setAlertMessage('AVP created successfully!');
+        setAlertType('success');
+
+        // Reset form data after submission
         setFormData({
           avpNumber: '',
           vehicleNumber: '',
           vehicleType: '',
-          aepNumber: '',
           renewalDate: '',
           expiryDate: '',
           validAreas: '',
@@ -76,10 +79,16 @@ const IssueContentAVP = (props) => {
           organization: '',
           violation: '', // Reset to empty string
         });
+        
         navigate('/admin/home/issue/avp');
+      } else {
+        setAlertMessage('Failed to create AVP: ' + response.data.message);
+        setAlertType('failure');
       }
     } catch (error) {
       console.error('Error submitting form:', error);
+      setAlertMessage('Error submitting form: ' + (error.response?.data.message || 'An error occurred'));
+      setAlertType('failure');
     }
   };
 
@@ -99,7 +108,9 @@ const IssueContentAVP = (props) => {
                   name="avpNumber"
                   placeholder="Enter AVP number"
                   required
+                  value={formData.avpNumber}
                   onChange={handleChange}
+                  autoComplete="off" // Added autocomplete
                 />
               </div>
               <div className="col-md-4 mb-3">
@@ -109,7 +120,9 @@ const IssueContentAVP = (props) => {
                   name="vehicleNumber"
                   placeholder="Enter vehicle number"
                   required
+                  value={formData.vehicleNumber}
                   onChange={handleChange}
+                  autoComplete="off" // Added autocomplete
                 />
               </div>
               <div className="col-md-4 mb-3">
@@ -119,7 +132,9 @@ const IssueContentAVP = (props) => {
                   name="vehicleType"
                   placeholder="Enter vehicle type"
                   required
+                  value={formData.vehicleType}
                   onChange={handleChange}
+                  autoComplete="off" // Added autocomplete
                 />
               </div>
               <div className="col-md-6 mb-3">
@@ -130,6 +145,7 @@ const IssueContentAVP = (props) => {
                     className="form-control"
                     name="renewalDate"
                     required
+                    value={formData.renewalDate}
                     onChange={handleChange}
                   />
                 </div>
@@ -142,6 +158,7 @@ const IssueContentAVP = (props) => {
                     className="form-control"
                     name="expiryDate"
                     required
+                    value={formData.expiryDate}
                     onChange={handleChange}
                   />
                 </div>
@@ -153,7 +170,9 @@ const IssueContentAVP = (props) => {
                   name="authorizedBy"
                   placeholder="Authorized By"
                   required
+                  value={formData.authorizedBy}
                   onChange={handleChange}
+                  autoComplete="off" // Added autocomplete
                 />
               </div>
               <div className="col-md-6 mb-3">
@@ -163,7 +182,9 @@ const IssueContentAVP = (props) => {
                   name="name"
                   placeholder="Name"
                   required
+                  value={formData.name}
                   onChange={handleChange}
+                  autoComplete="off" // Added autocomplete
                 />
               </div>
               <div className="col-md-6 mb-3">
@@ -173,7 +194,9 @@ const IssueContentAVP = (props) => {
                   name="designation"
                   placeholder="Designation"
                   required
+                  value={formData.designation}
                   onChange={handleChange}
+                  autoComplete="off" // Added autocomplete
                 />
               </div>
               <div className="col-md-6 mb-3">
@@ -183,7 +206,9 @@ const IssueContentAVP = (props) => {
                   name="organization"
                   placeholder="Organization"
                   required
+                  value={formData.organization}
                   onChange={handleChange}
+                  autoComplete="off" // Added autocomplete
                 />
               </div>
               <div className="col-md-12 mb-3">
@@ -192,6 +217,7 @@ const IssueContentAVP = (props) => {
                   name="validAreas"
                   rows="3"
                   placeholder="Enter valid areas"
+                  value={formData.validAreas}
                   onChange={handleChange}
                 ></textarea>
               </div>
@@ -202,6 +228,7 @@ const IssueContentAVP = (props) => {
                   rows="3"
                   placeholder="Enter Violations (comma-separated)"
                   required
+                  value={formData.violation}
                   onChange={handleChange}
                 ></textarea>
               </div>
@@ -212,6 +239,12 @@ const IssueContentAVP = (props) => {
               </button>
             </span>
           </form>
+
+          {/* Alert rendering */}
+          <div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%,-50%)' }}>
+            {alertType === 'success' && <SuccessAlert message={alertMessage} />}
+            {alertType === 'failure' && <FailureAlert message={alertMessage} />}
+          </div>
         </>
       ) : null}
     </div>

@@ -17,7 +17,7 @@ const GenerateQrAVP = () => {
     setMessage(''); // Reset message on new generation
     try {
       const response = await axios.get(
-        `https://accessmatrix.vercel.app/api/AVP/${avpId}` // Replace with your actual endpoint
+        `${process.env.REACT_APP_API_URL}/AVP/${avpId}` // Replace with your actual endpoint
       );
 
       console.log('API Response:', response.data);
@@ -33,7 +33,7 @@ const GenerateQrAVP = () => {
 
       const id = response.data.data.AVP._id;
       const encoded = await axios.get(
-        `https://accessmatrix.vercel.app/api/utils/create/${id}` // Replace with your actual endpoint
+        `${process.env.REACT_APP_API_URL}/utils/create/${id}` // Replace with your actual endpoint
       );
 
       const avp = encoded.data.data.code;
