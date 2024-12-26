@@ -54,8 +54,9 @@ const IssueContentADP = (props) => {
       );
       console.log(response.data);
       if (response.data.success) {
-        setAlertMessage('ADP created successfully!');
+        navigate('/admin/home/issue/adp');
         setAlertType('success');
+        setAlertMessage('ADP created successfully!');     
         setFormData({
           adpNumber: '',
           vehicleType: '',
@@ -65,23 +66,17 @@ const IssueContentADP = (props) => {
           aepareas: '',
           authorizedBy: '',
         });
-        setTimeout(() => {
-          navigate('/admin/home/issue/adp');
-        }, 2000);
-      } else {
-        setAlertMessage('Failed to create ADP: ' + response.data.message);
+      } else if (response.data.data.error) {
         setAlertType('failure');
+        setAlertMessage('' + response.data.message);        
+      } else {
+        setAlertType('failure');
+        setAlertMessage('ADP already exists');
       }
     } catch (error) {
       console.error('Error submitting form:', error);
-      if (error.response && error.response.data) {
-        setAlertMessage(
-          'Error: ' + error.response.data.message || 'An error occurred'
-        );
-      } else {
-        setAlertMessage('Network error: Please try again later.');
-      }
       setAlertType('failure');
+      setAlertMessage('ADP already exists for the AEP');
     }
   };
 

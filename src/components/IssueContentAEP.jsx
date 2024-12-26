@@ -7,16 +7,14 @@ import FailureAlert from './FailureAlert'; // Import FailureAlert component
 
 const IssueContentAEP = (props) => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    aepNumber: '',
-    employeeName: '',
-    dateOfIssue: '',
-    dateOfExpiry: '',
-    issuedBy: '',
-    status: '',
-    locations: [],
-    adpAvailable: false,
-  });
+  const [aepNumber, setAEPNumber] = useState('');
+  const [employeeName, setEmployeeName] = useState('');
+  const [dateOfIssue, setDateOfIssue] = useState('');
+  const [dateOfExpiry, setDateOfExpiry] = useState('');
+  const [issuedBy, setIssuedBy] = useState('');
+  const [status, setStatus] = useState('');
+  const [locations, setLocations] = useState([]);
+  const [adpAvailable, setAdpAvailable] = useState(false);
 
   // Alert state variables
   const [alertMessage, setAlertMessage] = useState('');
@@ -27,23 +25,38 @@ const IssueContentAEP = (props) => {
 
     if (name === 'locations') {
       if (checked) {
-        setFormData((prevData) => ({
-          ...prevData,
-          locations: [...prevData.locations, value],
-        }));
+        setLocations((prevLocations) => [...prevLocations, value]);
       } else {
-        setFormData((prevData) => ({
-          ...prevData,
-          locations: prevData.locations.filter(
-            (location) => location !== value
-          ),
-        }));
+        setLocations((prevLocations) =>
+          prevLocations.filter((location) => location !== value)
+        );
       }
     } else {
-      setFormData({
-        ...formData,
-        [name]: type === 'checkbox' ? checked : value,
-      });
+      switch (name) {
+        case 'aepNumber':
+          setAEPNumber(value);
+          break;
+        case 'employeeName':
+          setEmployeeName(value);
+          break;
+        case 'dateOfIssue':
+          setDateOfIssue(value);
+          break;
+        case 'dateOfExpiry':
+          setDateOfExpiry(value);
+          break;
+        case 'issuedBy':
+          setIssuedBy(value);
+          break;
+        case 'status':
+          setStatus(value);
+          break;
+        case 'adpAvailable':
+          setAdpAvailable(checked);
+          break;
+        default:
+          break;
+      }
     }
   };
 
@@ -51,14 +64,14 @@ const IssueContentAEP = (props) => {
     e.preventDefault();
 
     const packet = {
-      AEPId: formData.aepNumber,
-      Locations: formData.locations,
-      EmployeeName: formData.employeeName,
-      DateofIssue: formData.dateOfIssue,
-      DateofExpiry: formData.dateOfExpiry,
-      IssuedBy: formData.issuedBy,
-      status: formData.status,
-      AdpAvailable: formData.adpAvailable,
+      AEPId: aepNumber,
+      Locations: locations,
+      EmployeeName: employeeName,
+      DateofIssue: dateOfIssue,
+      DateofExpiry: dateOfExpiry,
+      IssuedBy: issuedBy,
+      status: status,
+      AdpAvailable: adpAvailable,
     };
 
     try {
@@ -66,30 +79,21 @@ const IssueContentAEP = (props) => {
         'https://accessmatrix.vercel.app/api/admin/AEP/',
         packet
       );
+
       if (response.data.success) {
-        setAlertMessage('AEP created successfully!');
         setAlertType('success');
+        setAlertMessage('AEP created successfully!');
         navigate('/admin/home/issue/aep');
-      } else {
-        setAlertMessage('Failed to create AEP: ' + response.data.message);
+      }
+      if (response.data.error) {
         setAlertType('failure');
+        setAlertMessage(response.data.message);
+        navigate('/admin/home/issue/aep');
       }
     } catch (error) {
-      setAlertMessage(
-        '' + (error.response?.data.message || 'An error occurred')
-      );
+      console.error(error);
       setAlertType('failure');
-    } finally {
-      setFormData({
-        aepNumber: '',
-        employeeName: '',
-        dateOfIssue: '',
-        dateOfExpiry: '',
-        issuedBy: '',
-        status: '',
-        locations: [],
-        adpAvailable: false,
-      });
+      setAlertMessage('AEP already exists');
     }
   };
 
@@ -106,7 +110,7 @@ const IssueContentAEP = (props) => {
                   className="form-control"
                   id="aepNumber"
                   name="aepNumber"
-                  value={formData.aepNumber}
+                  value={aepNumber}
                   onChange={handleChange}
                   placeholder="Enter AEP Number"
                   required
@@ -119,7 +123,7 @@ const IssueContentAEP = (props) => {
                   className="form-control"
                   id="employeeName"
                   name="employeeName"
-                  value={formData.employeeName}
+                  value={employeeName}
                   onChange={handleChange}
                   placeholder="Enter Employee Name"
                   required
@@ -136,7 +140,7 @@ const IssueContentAEP = (props) => {
                     className="form-control"
                     id="dateOfIssue"
                     name="dateOfIssue"
-                    value={formData.dateOfIssue}
+                    value={dateOfIssue}
                     onChange={handleChange}
                     required
                   />
@@ -150,7 +154,7 @@ const IssueContentAEP = (props) => {
                     className="form-control"
                     id="dateOfExpiry"
                     name="dateOfExpiry"
-                    value={formData.dateOfExpiry}
+                    value={dateOfExpiry}
                     onChange={handleChange}
                     required
                   />
@@ -164,7 +168,7 @@ const IssueContentAEP = (props) => {
                   className="form-control"
                   id="issuedBy"
                   name="issuedBy"
-                  value={formData.issuedBy}
+                  value={issuedBy}
                   onChange={handleChange}
                   placeholder="Issued By"
                   required
@@ -175,7 +179,7 @@ const IssueContentAEP = (props) => {
                   className="form-control"
                   id="status"
                   name="status"
-                  value={formData.status}
+                  value={status}
                   onChange={handleChange}
                   required
                 >
@@ -224,7 +228,7 @@ const IssueContentAEP = (props) => {
                       id={location.value}
                       name="locations"
                       value={location.value}
-                      checked={formData.locations.includes(location.value)}
+                      checked={locations.includes(location.value)}
                       onChange={handleChange}
                     />
                     <label
@@ -243,7 +247,7 @@ const IssueContentAEP = (props) => {
                 type="checkbox"
                 id="adpAvailable"
                 name="adpAvailable"
-                checked={formData.adpAvailable}
+                checked={adpAvailable}
                 onChange={handleChange}
               />
               <label className="form-check-label" htmlFor="adpAvailable">
@@ -269,8 +273,16 @@ const IssueContentAEP = (props) => {
               transform: 'translate(-50%,-50%)',
             }}
           >
-            {alertType === 'success' && <SuccessAlert message={alertMessage} />}
-            {alertType === 'failure' && <FailureAlert message={alertMessage} />}
+            {alertType && (
+              <>
+                {alertType === 'success' && (
+                  <SuccessAlert message={alertMessage} />
+                )}
+                {alertType === 'failure' && (
+                  <FailureAlert message={alertMessage} />
+                )}
+              </>
+            )}
           </div>
         </>
       )}

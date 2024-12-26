@@ -19,37 +19,47 @@ const LoginPage = (props) => {
   const handleLoginButton = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setMessage(''); // Clear previous messages
 
     try {
       const packet = {
         employeeId: username,
         password: password,
       };
-      console.log(packet);
       const response = await axios.post(
         'https://accessmatrix.vercel.app/api/users/login',
         packet
       );
-      const accessToken = response.data.data.accessToken;
-      const refreshToken = response.data.data.refreshToken;
-      Cookies.set('accessToken', accessToken);
-      Cookies.set('refreshToken', refreshToken);
-      if (
-        response.data.success &&
-        response.data.data.user.role === 'Security'
-      ) {
-        navigate('/security/home');
-      } else if (
-        response.data.success &&
-        response.data.data.user.role === 'Admin'
-      ) {
-        navigate('/admin/home');
+
+      // Check for success response
+      if (response.data.success) {
+        const { accessToken, refreshToken } = response.data.data;
+        Cookies.set('accessToken', accessToken);
+        Cookies.set('refreshToken', refreshToken);
+
+        const role = response.data.data.user.role;
+        if (role === 'Security') {
+          navigate('/security/home');
+        } else if (role === 'Admin') {
+          navigate('/admin/home');
+        } else {
+          setMessage('Invalid role detected.');
+        }
       } else {
-        setMessage('Invalid Credentials');
+        // Handle error responses from the server
+        setMessage(response.data.message || 'An unexpected error occurred.');
       }
     } catch (error) {
-      console.error('Login error:', error);
-      setMessage('An error occurred during login. Please try again.');
+      // Handle network or other errors
+      if (error.response) {
+        // Server responded with a status outside of the 2xx range
+        setMessage(
+          error.response.data.message || 'An error occurred during login.'
+        );
+      } else {
+        // Network error or other unexpected error
+        setMessage('Network error. Please try again later.');
+      }
     } finally {
       setLoading(false);
     }
@@ -117,7 +127,7 @@ const LoginPage = (props) => {
           </button>
         )}
 
-        {message && <p className="text-danger">{message}</p>}
+        {message && <p className="text-danger text-center mt-2">{message}</p>}
       </form>
     </div>
   );

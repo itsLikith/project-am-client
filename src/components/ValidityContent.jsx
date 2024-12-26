@@ -47,7 +47,7 @@ const ValidityContent = (props) => {
     return daysDiff < 10;
   };
 
-  // Filter AEPs based on the search term
+  // Filter AEPs based on the search term, including ADP IDs
   const filteredData = aeps
     .map((aep) => {
       const employeeName = aep.EmployeeName || 'Unknown'; // Get EmployeeName directly from AEP
@@ -65,7 +65,10 @@ const ValidityContent = (props) => {
       const aepMatch = item.AEPId.toLowerCase().includes(
         searchTerm.toLowerCase()
       );
-      return nameMatch || aepMatch;
+      const adpMatch = item.ADPs.some((adp) =>
+        adp.ADPId.toLowerCase().includes(searchTerm.toLowerCase())
+      ); // Check for ADP ID match
+      return nameMatch || aepMatch || adpMatch; // Include ADP ID match
     });
 
   // Separate into expiring soon and not expiring soon
@@ -83,10 +86,12 @@ const ValidityContent = (props) => {
   // Combine the arrays, with expiring soon items first
   const sortedData = [...expiringSoonItems, ...notExpiringSoonItems];
 
-  // Filter AVPs based on the search term
-  const filteredAVPs = avps.filter((avp) =>
-    avp.AVPId.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filter AVPs based on the search term, including names
+  const filteredAVPs = avps.filter((avp) => {
+    const idMatch = avp.AVPId.toLowerCase().includes(searchTerm.toLowerCase());
+    const nameMatch = avp.Name.toLowerCase().includes(searchTerm.toLowerCase());
+    return idMatch || nameMatch; // Include name match
+  });
 
   return (
     <div className="employee-content">
@@ -108,7 +113,7 @@ const ValidityContent = (props) => {
             <input
               type="text"
               className="form-control"
-              placeholder="Search AEPs or Employee Names"
+              placeholder="Search AEPs, Employee Names, or ADP IDs"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -205,7 +210,7 @@ const ValidityContent = (props) => {
             <input
               type="text"
               className="form-control"
-              placeholder="Search AVPs"
+              placeholder="Search AVPs by ID or Name"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -236,7 +241,7 @@ const ValidityContent = (props) => {
                 })
               ) : (
                 <tr>
-                  <td colSpan="2" className="text-center">
+                  <td colSpan="3" className="text-center">
                     No AVP data available
                   </td>
                 </tr>

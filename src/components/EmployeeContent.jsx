@@ -34,7 +34,7 @@ const EmployeeContent = (props) => {
     fetchEmployeesAndAEPs();
   }, []);
 
-  // Filter AEPs based on the search term
+  // Filter AEPs based on the search term, including ADP IDs
   const filteredAEPs = aeps
     .map((aep) => {
       const employeeName = aep.EmployeeName || 'Unknown';
@@ -51,13 +51,20 @@ const EmployeeContent = (props) => {
       const aepMatch = item.AEPId.toLowerCase().includes(
         searchTerm.toLowerCase()
       );
-      return nameMatch || aepMatch;
+      const adpMatch = item.ADPs.some((adp) =>
+        adp.ADPId.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      return nameMatch || aepMatch || adpMatch; // Include ADP ID match
     });
 
-  // Filter AVPs based on the search term
-  const filteredAVPs = avps.filter((avp) =>
-    avp.Name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filter AVPs based on the search term, including AVP IDs
+  const filteredAVPs = avps.filter((avp) => {
+    const nameMatch = avp.Name.toLowerCase().includes(searchTerm.toLowerCase());
+    const avpIdMatch = avp.AVPId.toLowerCase().includes(
+      searchTerm.toLowerCase()
+    );
+    return nameMatch || avpIdMatch; // Include AVP ID match
+  });
 
   return (
     <div className="employee-content">
@@ -79,7 +86,7 @@ const EmployeeContent = (props) => {
             <input
               type="text"
               className="form-control"
-              placeholder="Search AEPs or Employee Names"
+              placeholder="Search AEPs, Employee Names, or ADP IDs"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -125,7 +132,7 @@ const EmployeeContent = (props) => {
             <input
               type="text"
               className="form-control"
-              placeholder="Search AVPs"
+              placeholder="Search AVPs by ID or Name"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -155,7 +162,7 @@ const EmployeeContent = (props) => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="5">No AVP data available</td>
+                    <td colSpan="2">No AVP data available</td>
                   </tr>
                 )}
               </tbody>

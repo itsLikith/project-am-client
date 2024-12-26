@@ -43,6 +43,8 @@ const IssueContentAVP = (props) => {
     // Prepare the packet for the API call
     const packet = {
       AVPId: formData.avpNumber,
+      VehicleNo: formData.vehicleNumber,
+      VehicleType: formData.vehicleType,
       DateofIssue: formData.renewalDate,
       AVPValidity: formData.expiryDate,
       AuthorizedBy: formData.authorizedBy,
@@ -50,18 +52,19 @@ const IssueContentAVP = (props) => {
       Designation: formData.designation,
       Organization: formData.organization,
       Violation: formData.violation.split(',').map((v) => v.trim()), // Convert to array
+      status: 'ACTIVE',
     };
 
     try {
-      console.log(packet)
+      console.log(packet);
       const response = await axios.post(
         'https://accessmatrix.vercel.app/api/AVP/create',
         packet
       );
 
       if (response.data.success) {
-        setAlertMessage('AVP created successfully!');
         setAlertType('success');
+        setAlertMessage('AVP created successfully!');
 
         // Reset form data after submission
         setFormData({
@@ -79,15 +82,18 @@ const IssueContentAVP = (props) => {
           organization: '',
           violation: '', // Reset to empty string
         });
-        
+
         navigate('/admin/home/issue/avp');
       } else {
+        navigate('/admin/home/issue/avp');
         setAlertMessage('Failed to create AVP: ' + response.data.message);
         setAlertType('failure');
       }
     } catch (error) {
       console.error('Error submitting form:', error);
-      setAlertMessage('Error submitting form: ' + (error.response?.data.message || 'An error occurred'));
+      setAlertMessage(
+        '' + (error.response?.data.message || 'An error occurred')
+      );
       setAlertType('failure');
     }
   };
@@ -126,16 +132,20 @@ const IssueContentAVP = (props) => {
                 />
               </div>
               <div className="col-md-4 mb-3">
-                <input
-                  type="text"
-                  className="form-control"
+                <select
                   name="vehicleType"
-                  placeholder="Enter vehicle type"
+                  className="form-control"
                   required
                   value={formData.vehicleType}
                   onChange={handleChange}
-                  autoComplete="off" // Added autocomplete
-                />
+                >
+                  <option value="" disabled>
+                    Select{' '}
+                  </option>
+                  <option value="Two Wheeler">Two - Wheeler</option>
+                  <option value="Four Wheeler">Four - Wheeler</option>
+                  <option value="Heavy Vehicle">Heavy - Vehicle</option>
+                </select>
               </div>
               <div className="col-md-6 mb-3">
                 <div className="form-control">
@@ -241,7 +251,14 @@ const IssueContentAVP = (props) => {
           </form>
 
           {/* Alert rendering */}
-          <div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%,-50%)' }}>
+          <div
+            style={{
+              position: 'absolute',
+              left: '50%',
+              top: '50%',
+              transform: 'translate(-50%,-50%)',
+            }}
+          >
             {alertType === 'success' && <SuccessAlert message={alertMessage} />}
             {alertType === 'failure' && <FailureAlert message={alertMessage} />}
           </div>
