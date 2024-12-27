@@ -37,17 +37,9 @@ const RecordsContent = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        'https://accessmatrix.vercel.app/api/logs/all' // Replace with your actual endpoint for logs
+        'https://accessmatrix.vercel.app/api/log'
       );
-      if (response.data.success) {
-        const processedLogs = response.data.data.map((log) => ({
-          validatedId: log.validatedId,
-          Id: log.Id,
-          entryTime: new Date(log.entryTime).toLocaleString(),
-          exitTime: new Date(log.exitTime).toLocaleString(),
-        }));
-        setLogs(processedLogs);
-      }
+      setLogs(response.data.data);
     } catch (error) {
       console.error('Error fetching logs:', error);
     } finally {
@@ -59,19 +51,26 @@ const RecordsContent = () => {
     fetchLogs();
   }, []);
 
-  // Handle search functionality
+  // Filter logs based on entry time and search term
   const filteredLogs = logs.filter((log) => {
-    const searchLower = searchTerm.toLowerCase();
     const logEntryTime = new Date(log.entryTime);
     const logExitTime = new Date(log.exitTime);
+    
+    // Check if log entry time is within the selected date range
     const isWithinDateRange =
       (!startDate || logEntryTime >= new Date(startDate)) &&
       (!endDate || logEntryTime <= new Date(endDate));
 
+    // Show all logs if searchTerm is empty
+    if (!searchTerm) {
+      return isWithinDateRange;
+    }
+
     return (
-      (log.validatedId.toLowerCase().includes(searchLower) ||
-        log.Id.toString().includes(searchLower)) &&
-      isWithinDateRange
+      isWithinDateRange && (
+        log.EntryId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (log.location && log.location.toLowerCase().includes(searchTerm.toLowerCase()))
+      )
     );
   });
 
@@ -99,7 +98,6 @@ const RecordsContent = () => {
             className="form-control"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            placeholder="End Date"
           />
         </div>
       </div>
@@ -111,7 +109,7 @@ const RecordsContent = () => {
         <input
           type="text"
           className="form-control"
-          placeholder="Search Validated ID or Log ID"
+          placeholder="Search Validated ID, Log ID, or Location"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -129,17 +127,19 @@ const RecordsContent = () => {
             <tr>
               <th>Validated ID</th>
               <th>Log ID</th>
+              <th>Location</th>
               <th>Entry Time</th>
               <th>Exit Time</th>
             </tr>
           </thead>
           <tbody>
             {filteredLogs.map((log) => (
-              <tr key={log.Id}>
-                <td>{log.validatedId}</td>
-                <td>{log.Id}</td>
-                <td>{log.entryTime}</td>
-                <td>{log.exitTime}</td>
+              <tr key={log._id}>
+                <td>{log.validatedId || 'N/A'}</td>
+                <td>{log.EntryId || 'N/A'}</td>
+                <td>{log.location || 'N/A'}</td>
+                <td>{new Date(log.entryTime).toLocaleString() || 'N/A'}</td>
+                <td>{new Date(log.exitTime).toLocaleString() || 'N/A'}</td>
               </tr>
             ))}
           </tbody>

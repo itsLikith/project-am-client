@@ -56,7 +56,7 @@ const IssueContentADP = (props) => {
       if (response.data.success) {
         navigate('/admin/home/issue/adp');
         setAlertType('success');
-        setAlertMessage('ADP created successfully!');     
+        setAlertMessage('ADP created successfully!');
         setFormData({
           adpNumber: '',
           vehicleType: '',
@@ -68,7 +68,7 @@ const IssueContentADP = (props) => {
         });
       } else if (response.data.data.error) {
         setAlertType('failure');
-        setAlertMessage('' + response.data.message);        
+        setAlertMessage('' + response.data.message);
       } else {
         setAlertType('failure');
         setAlertMessage('ADP already exists');
@@ -76,7 +76,9 @@ const IssueContentADP = (props) => {
     } catch (error) {
       console.error('Error submitting form:', error);
       setAlertType('failure');
-      setAlertMessage('ADP already exists for the AEP');
+      setAlertMessage(
+        'Failed to create ADP check for duplicate inputs or invalid inputs'
+      );
     }
   };
 
