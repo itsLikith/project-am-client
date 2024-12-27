@@ -20,16 +20,16 @@ const UnblockContent = () => {
       return;
     }
 
-    let backend_url = 'https://accessmatrix.vercel.app/api/';
+    let backend_url = process.env.REACT_APP_API_URL;
     switch (selected) {
       case 'adp':
-        backend_url += 'adp/unblock/' + ID;
+        backend_url += '/adp/unblock/' + ID;
         break;
       case 'avp':
-        backend_url += 'avp/unblock/' + ID;
+        backend_url += '/avp/unblock/' + ID;
         break;
       case 'aep':
-        backend_url += 'admin/aep/unblock/' + ID;
+        backend_url += '/admin/aep/unblock/' + ID;
         break;
       default:
         return; // No valid type selected

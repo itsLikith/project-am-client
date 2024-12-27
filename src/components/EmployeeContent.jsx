@@ -9,22 +9,27 @@ const EmployeeContent = (props) => {
   const [avps, setAVPs] = useState([]); // State for AVPs
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null); // State for error handling
 
   // Function to fetch employee, AEP, and AVP details from the API
   const fetchEmployeesAndAEPs = async () => {
     setLoading(true);
+    setError(null); // Reset error state
     try {
       const AllData = await axios.get(
-        'https://accessmatrix.vercel.app/api/users/employees/all'
+        `${process.env.REACT_APP_API_URL}/users/employees/all`
       );
       const response = AllData.data;
       if (response.success) {
         setEmployees(response.data.users);
         setAEPs(response.data.aeps);
         setAVPs(response.data.avps); // Set AVP data
+      } else {
+        setError('Failed to fetch data.'); // Handle unsuccessful response
       }
     } catch (error) {
-      console.error('Error fetching employee, AEP, and AVP data:', error);
+      setError('Error fetching employee, AEP, and AVP data. Please try again.'); // Set error message
+      console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
     }
@@ -34,14 +39,20 @@ const EmployeeContent = (props) => {
     fetchEmployeesAndAEPs();
   }, []);
 
+  // Get current date for comparison
+  const currentDate = new Date();
+
   // Filter AEPs based on the search term, including ADP IDs
   const filteredAEPs = aeps
     .map((aep) => {
       const employeeName = aep.EmployeeName || 'Unknown';
+      const isExpired = new Date(aep.DateofExpiry) < currentDate;
+
       return {
         AEPId: aep.AEPId,
         employeeName: employeeName,
         ADPs: aep.ADP || [],
+        AEPStatus: isExpired ? 'INACTIVE' : aep.status || 'N/A', // AEP Status
       };
     })
     .filter((item) => {
@@ -56,6 +67,15 @@ const EmployeeContent = (props) => {
       );
       return nameMatch || aepMatch || adpMatch; // Include ADP ID match
     });
+
+  // Map ADP statuses and check for expiration
+  const adpStatuses = {};
+  aeps.forEach(aep => {
+    aep.ADP.forEach(adp => {
+      const isAdpExpired = new Date(adp.ADPValidity) < currentDate;
+      adpStatuses[adp.ADPId] = isAdpExpired ? 'INACTIVE' : adp.status;
+    });
+  });
 
   // Filter AVPs based on the search term, including AVP IDs
   const filteredAVPs = avps.filter((avp) => {
@@ -98,25 +118,35 @@ const EmployeeContent = (props) => {
                 <span className="visually-hidden">Loading...</span>
               </div>
             </div>
+          ) : error ? (
+            <div className="text-danger text-center">{error}</div> // Display error message
           ) : (
             <table className="table">
               <thead>
                 <tr>
-                  <th>AEP ID</th>
-                  <th>Employee Name</th>
+                  <th>Employee Name</th> {/* Rearranged Column */}
+                  <th>AEP ID</th> {/* Rearranged Column */}
                   <th>ADP IDs</th>
+                  <th>ADP Status</th> {/* New Column */}
+                  <th>AEP Status</th> {/* New Column */}
                 </tr>
               </thead>
               <tbody>
                 {filteredAEPs.map((item) => (
                   <tr key={item.AEPId}>
-                    <td>{item.AEPId}</td>
-                    <td>{item.employeeName}</td>
+                    <td>{item.employeeName}</td> {/* Rearranged Data */}
+                    <td>{item.AEPId}</td> {/* Rearranged Data */}
                     <td>
                       {item.ADPs.length > 0
                         ? item.ADPs.map((adp) => adp.ADPId).join(', ')
                         : 'N/A'}
                     </td>
+                    <td>
+                      {item.ADPs.length > 0
+                        ? item.ADPs.map(adp => adpStatuses[adp.ADPId] || 'N/A').join(', ')
+                        : 'N/A'}
+                    </td> {/* ADP Status */}
+                    <td>{item.AEPStatus}</td> {/* AEP Status */}
                   </tr>
                 ))}
               </tbody>
@@ -144,25 +174,29 @@ const EmployeeContent = (props) => {
                 <span className="visually-hidden">Loading...</span>
               </div>
             </div>
+          ) : error ? (
+            <div className="text-danger text-center">{error}</div> // Display error message
           ) : (
             <table className="table mt-3">
               <thead>
                 <tr>
-                  <th>AVP ID</th>
-                  <th>Name</th>
+                  <th>Name</th> {/* Rearranged Column */}
+                  <th>AVP ID</th> {/* Rearranged Column */}
+                  <th>AVP Status</th> {/* New Column */}
                 </tr>
               </thead>
               <tbody>
                 {filteredAVPs.length > 0 ? (
                   filteredAVPs.map((avp) => (
                     <tr key={avp.AVPId}>
-                      <td>{avp.AVPId}</td>
-                      <td>{avp.Name}</td>
+                      <td>{avp.Name}</td> {/* Rearranged Data */}
+                      <td>{avp.AVPId}</td> {/* Rearranged Data */}
+                      <td>{avp.status || 'N/A'}</td> {/* AVP Status */}
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="2">No AVP data available</td>
+                    <td colSpan="3">No AVP data available</td>
                   </tr>
                 )}
               </tbody>

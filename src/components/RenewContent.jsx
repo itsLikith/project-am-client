@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
 import { Save } from 'lucide-react';
 import axios from 'axios';
+import SuccessAlert from './SuccessAlert'; // Import SuccessAlert component
+import FailureAlert from './FailureAlert'; // Import FailureAlert component
+
 const RenewContent = () => {
   const [selected, setSelected] = useState('');
+  const [id, setID] = useState('');
+  const [from, setFrom] = useState('');
+  const [to, setTo] = useState('');
+
+  // Alert state variables
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertType, setAlertType] = useState('');
 
   const handleChange = (event) => {
     setSelected(event.target.value);
   };
-
-  const [id, setID] = useState('');
-  const [from, setFrom] = useState('');
-  const [to, setTo] = useState('');
 
   const packet = {
     type: selected,
@@ -22,54 +28,71 @@ const RenewContent = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(packet);
-    let backend_url = 'https://accessmatrix.vercel.app/api/';
+    let backend_url = process.env.REACT_APP_API_URL;
     let newPacket;
+
     switch (packet.type) {
       case 'adp':
-        backend_url += 'adp/renew/' + packet.id;
+        backend_url += '/adp/renew/' + packet.id;
         newPacket = {
           ...(packet.from && { DateofIssue: packet.from }),
           ...(packet.to && { ADPValidity: packet.to }),
         };
         break;
       case 'avp':
-        backend_url += 'avp/renew/' + packet.id;
+        backend_url += '/avp/renew/' + packet.id;
         newPacket = {
           ...(packet.from && { DateofIssue: packet.from }),
           ...(packet.to && { AVPValidity: packet.to }),
         };
         break;
       case 'aep':
-        backend_url += 'admin/aep/renew/' + packet.id;
+        backend_url += '/admin/aep/renew/' + packet.id;
         newPacket = {
           ...(packet.from && { DateofIssue: packet.from }),
           ...(packet.to && { DateofExpiry: packet.to }),
         };
         break;
       default:
+        return;
     }
 
-    const response = await axios.post(backend_url, newPacket);
-    console.log(response.data);
+    try {
+      const response = await axios.post(backend_url, newPacket);
+      console.log(response.data);
+      
+      if (response.data.success) {
+        setAlertType('success');
+        setAlertMessage('Renewal successful!');
+      } else {
+        setAlertType('failure');
+        setAlertMessage('Failed to renew: ' + response.data.message);
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setAlertMessage('Error occurred: ' + (error.response?.data.message || 'An error occurred'));
+      setAlertType('failure');
+    }
   };
 
   return (
     <div className="renew-content">
+      {alertType === 'success' && <SuccessAlert message={alertMessage} />}
+      {alertType === 'failure' && <FailureAlert message={alertMessage} />}
+      
       <select
         name="drop"
-        id=""
         className="form-control mt-3"
         onChange={handleChange}
         value={selected}
       >
-        <option value="" disabled>
-          Select type
-        </option>
+        <option value="" disabled>Select type</option>
         <option value="adp">ADP</option>
         <option value="avp">AVP</option>
         <option value="aep">AEP</option>
       </select>
-      {selected === 'adp' ? (
+
+      {selected === 'adp' && (
         <>
           <input
             type="text"
@@ -105,7 +128,8 @@ const RenewContent = () => {
             </button>
           </span>
         </>
-      ) : selected === 'avp' ? (
+      )}
+      {selected === 'avp' && (
         <>
           <input
             type="text"
@@ -141,7 +165,8 @@ const RenewContent = () => {
             </button>
           </span>
         </>
-      ) : selected === 'aep' ? (
+      )}
+      {selected === 'aep' && (
         <>
           <input
             type="text"
@@ -177,7 +202,7 @@ const RenewContent = () => {
             </button>
           </span>
         </>
-      ) : null}
+      )}
     </div>
   );
 };

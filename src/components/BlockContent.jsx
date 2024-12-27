@@ -20,16 +20,16 @@ const BlockContent = () => {
       return;
     }
 
-    let backend_url = 'https://accessmatrix.vercel.app/api/';
+    let backend_url = process.env.REACT_APP_API_URL;
     switch (selected) {
       case 'adp':
-        backend_url += 'adp/block/' + ID;
+        backend_url += '/adp/block/' + ID;
         break;
       case 'avp':
-        backend_url += 'avp/block/' + ID;
+        backend_url += '/avp/block/' + ID;
         break;
       case 'aep':
-        backend_url += 'admin/aep/block/' + ID;
+        backend_url += '/admin/aep/block/' + ID;
         break;
       default:
         return; // No valid type selected

@@ -58,7 +58,7 @@ const IssueContentAVP = (props) => {
     try {
       console.log(packet);
       const response = await axios.post(
-        'https://accessmatrix.vercel.app/api/AVP/create',
+        process.env.REACT_APP_API_URL+'/AVP/create',
         packet
       );
 

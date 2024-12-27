@@ -14,7 +14,7 @@ const ValidityContent = (props) => {
     setLoading(true);
     try {
       const response = await fetch(
-        'https://accessmatrix.vercel.app/api/users/employees/all'
+        process.env.REACT_APP_API_URL+'/users/employees/all'
       );
       const data = await response.json();
       if (data.success) {

@@ -37,7 +37,7 @@ const RecordsContent = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        'https://accessmatrix.vercel.app/api/log'
+        process.env.REACT_APP_API_URL+'/log'
       );
       setLogs(response.data.data);
     } catch (error) {
