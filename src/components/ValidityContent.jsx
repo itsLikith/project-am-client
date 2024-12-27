@@ -1,6 +1,7 @@
 import { TicketCheck, Search } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import ValidityContentRadio from './ValidityContentRadio';
+import Cookies from 'js-cookie';
 
 const ValidityContent = (props) => {
   const [employees, setEmployees] = useState([]);
@@ -14,7 +15,13 @@ const ValidityContent = (props) => {
     setLoading(true);
     try {
       const response = await fetch(
-        process.env.REACT_APP_API_URL+'/users/employees/all'
+        process.env.REACT_APP_API_URL + '/users/employees/all',
+        {
+          headers: {
+            "authorization": Cookies.get('accessToken') ? `Bearer ${Cookies.get('accessToken')}` : "",
+            "sessionData": Cookies.get('')
+          }
+        }
       );
       const data = await response.json();
       if (data.success) {
@@ -123,6 +130,12 @@ const ValidityContent = (props) => {
               <div className="spinner-border m-3" role="status">
                 <span className="visually-hidden">Loading...</span>
               </div>
+            </div>
+          ) : sortedData.length === 0 ? ( // Check if sortedData is empty
+            <div className="text-center">
+              <table className='table'>
+              <td>No data available Try logging again </td>
+              </table>
             </div>
           ) : (
             <table className="table mt-3">
@@ -242,7 +255,7 @@ const ValidityContent = (props) => {
               ) : (
                 <tr>
                   <td colSpan="3" className="text-center">
-                    No AVP data available
+                    No AVP data available. Try logging in again
                   </td>
                 </tr>
               )}

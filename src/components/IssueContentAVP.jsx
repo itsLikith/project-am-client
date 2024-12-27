@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import SuccessAlert from './SuccessAlert'; // Import SuccessAlert component
 import FailureAlert from './FailureAlert'; // Import FailureAlert component
+import Cookies from 'js-cookie';
 
 const IssueContentAVP = (props) => {
   const navigate = useNavigate();
@@ -59,7 +60,13 @@ const IssueContentAVP = (props) => {
       console.log(packet);
       const response = await axios.post(
         process.env.REACT_APP_API_URL+'/AVP/create',
-        packet
+        packet,
+        {
+          headers: {
+              "authorization": Cookies.get('accessToken') ? `Bearer ${Cookies.get('accessToken')}` : "",
+              "sessionData": Cookies.get('')
+          }
+      }
       );
 
       if (response.data.success) {

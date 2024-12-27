@@ -3,7 +3,7 @@ import { Save } from 'lucide-react';
 import axios from 'axios';
 import SuccessAlert from './SuccessAlert'; // Import SuccessAlert component
 import FailureAlert from './FailureAlert'; // Import FailureAlert component
-
+import Cookies from 'js-cookie';
 const RenewContent = () => {
   const [selected, setSelected] = useState('');
   const [id, setID] = useState('');
@@ -58,7 +58,14 @@ const RenewContent = () => {
     }
 
     try {
-      const response = await axios.post(backend_url, newPacket);
+      const response = await axios.post(backend_url, newPacket,
+        {
+          headers: {
+              "authorization": Cookies.get('accessToken') ? `Bearer ${Cookies.get('accessToken')}` : "",
+              "sessionData": Cookies.get('')
+          }
+      }
+      );
       console.log(response.data);
       
       if (response.data.success) {

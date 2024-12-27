@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { ArrowDownToLine, Layers2 } from 'lucide-react';
 import axios from 'axios';
 import { QRCodeSVG } from 'qrcode.react';
+import Cookies from 'js-cookie';
 
 const GenerateQrAVP = () => {
   const [avpId, setAvpId] = useState('');
@@ -17,7 +18,12 @@ const GenerateQrAVP = () => {
     setMessage(''); // Reset message on new generation
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/AVP/${avpId}` // Replace with your actual endpoint
+        `${process.env.REACT_APP_API_URL}/AVP/${avpId}`, {
+          headers: {
+              "authorization": Cookies.get('accessToken') ? `Bearer ${Cookies.get('accessToken')}` : "",
+              "sessionData": Cookies.get('')
+          }
+      }// Replace with your actual endpoint
       );
 
       console.log('API Response:', response.data);

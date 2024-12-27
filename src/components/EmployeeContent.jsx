@@ -2,6 +2,7 @@ import { UsersRound, Search } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import EmployeeContentRadio from './EmployeeContentRadio';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const EmployeeContent = (props) => {
   const [employees, setEmployees] = useState([]);
@@ -17,7 +18,12 @@ const EmployeeContent = (props) => {
     setError(null); // Reset error state
     try {
       const AllData = await axios.get(
-        `${process.env.REACT_APP_API_URL}/users/employees/all`
+        `${process.env.REACT_APP_API_URL}/users/employees/all`,{
+          headers: {
+              "authorization": Cookies.get('accessToken') ? `Bearer ${Cookies.get('accessToken')}` : "",
+              "sessionData": Cookies.get('')
+          }
+      }
       );
       const response = AllData.data;
       if (response.success) {
@@ -28,7 +34,7 @@ const EmployeeContent = (props) => {
         setError('Failed to fetch data.'); // Handle unsuccessful response
       }
     } catch (error) {
-      setError('Error fetching employee, AEP, and AVP data. Please try again.'); // Set error message
+      setError(error.message); // Set error message
       console.error('Error fetching data:', error);
     } finally {
       setLoading(false);

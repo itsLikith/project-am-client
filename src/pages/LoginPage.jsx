@@ -34,8 +34,8 @@ const LoginPage = (props) => {
       // Check for success response
       if (response.data.success) {
         const { accessToken, refreshToken } = response.data.data;
-        Cookies.set('access-matrix-accessToken', accessToken);
-        Cookies.set('access-matrix-refreshToken', refreshToken);
+        Cookies.set('accessToken', accessToken);
+        Cookies.set('refreshToken', refreshToken);
 
         const role = response.data.data.user.role;
         if (role === 'Security') {

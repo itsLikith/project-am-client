@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CircleOff } from 'lucide-react';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const BlockContent = () => {
   const [selected, setSelected] = useState('');
@@ -36,7 +37,12 @@ const BlockContent = () => {
     }
 
     try {
-      const response = await axios.get(backend_url);
+      const response = await axios.get(backend_url,{
+        headers: {
+            "authorization": Cookies.get('accessToken') ? `Bearer ${Cookies.get('accessToken')}` : "",
+            "sessionData": Cookies.get('')
+        }
+    });
       console.log(response.data);
       if (response.data.success) {
         setMessage(response.data.message);
@@ -46,7 +52,7 @@ const BlockContent = () => {
         setError(null); // Clear error on failure
       }
     } catch (error) {
-      setMessage('Error blocking content. Please try again.'); // Set error message
+      setMessage(error.message); // Set error message
       console.error(error);
     }
   };

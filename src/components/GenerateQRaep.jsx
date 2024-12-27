@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Layers2, ArrowDownToLine } from 'lucide-react';
 import axios from 'axios';
 import { QRCodeSVG } from 'qrcode.react';
+import Cookies from 'js-cookie';
 
 const GenerateQrAEP = () => {
   const [adpAepId, setAdpAepId] = useState('');
@@ -17,7 +18,12 @@ const GenerateQrAEP = () => {
     setMessage('');
     try {
       const response = await axios.get(
-        process.env.REACT_APP_API_URL + '/admin/AEP/getADPs/' + adpAepId
+        process.env.REACT_APP_API_URL + '/admin/AEP/getADPs/' + adpAepId,{
+          headers: {
+              "authorization": Cookies.get('accessToken') ? `Bearer ${Cookies.get('accessToken')}` : "",
+              "sessionData": Cookies.get('')
+          }
+      }
       );
       if (
         !response.data.data ||
@@ -47,7 +53,12 @@ const GenerateQrAEP = () => {
       }
       if (QRtemp.data.adp) {
         const encoded = await axios.get(
-          process.env.REACT_APP_API_URL + '/utils/create/' + QRtemp.data.adp
+          process.env.REACT_APP_API_URL + '/utils/create/' + QRtemp.data.adp,{
+            headers: {
+                "authorization": Cookies.get('accessToken') ? `Bearer ${Cookies.get('accessToken')}` : "",
+                "sessionData": Cookies.get('')
+            }
+        }
         );
         QRtemp.data.adp = encoded.data.data.code;
       }

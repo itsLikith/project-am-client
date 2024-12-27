@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { Circle } from 'lucide-react';
+import Cookies from 'js-cookie';
 
 const UnblockContent = () => {
   const [selected, setSelected] = useState('');
@@ -36,7 +37,12 @@ const UnblockContent = () => {
     }
 
     try {
-      const response = await axios.get(backend_url);
+      const response = await axios.get(backend_url,{
+        headers: {
+            "authorization": Cookies.get('accessToken') ? `Bearer ${Cookies.get('accessToken')}` : "",
+            "sessionData": Cookies.get('')
+        }
+    });
       console.log(response.data);
       if(response.data.success) {
         setMessage(response.data.message);
@@ -45,7 +51,7 @@ const UnblockContent = () => {
       }
       // Optionally, handle success (e.g., show a success message)
     } catch (err) {
-      setMessage('Error unblocking content. Please try again.');
+      setMessage(err.message);
       console.error(err);
     }
   };

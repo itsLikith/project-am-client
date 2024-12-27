@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Save } from 'lucide-react';
 import SuccessAlert from './SuccessAlert';
 import FailureAlert from './FailureAlert';
+import Cookies from 'js-cookie';
 
 const IssueContentADP = (props) => {
   const navigate = useNavigate();
@@ -50,7 +51,12 @@ const IssueContentADP = (props) => {
     try {
       const response = await axios.post(
         process.env.REACT_APP_API_URL+'/ADP/',
-        packet
+        packet,{
+          headers: {
+              "authorization": Cookies.get('accessToken') ? `Bearer ${Cookies.get('accessToken')}` : "",
+              "sessionData": Cookies.get('')
+          }
+      }
       );
       console.log(response.data);
       if (response.data.success) {
@@ -76,9 +82,7 @@ const IssueContentADP = (props) => {
     } catch (error) {
       console.error('Error submitting form:', error);
       setAlertType('failure');
-      setAlertMessage(
-        'Failed to create ADP check for duplicate inputs or invalid inputs'
-      );
+      setAlertMessage(error.message);
     }
   };
 

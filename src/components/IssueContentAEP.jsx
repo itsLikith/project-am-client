@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Save, Locate } from 'lucide-react';
+import { Save, Locate, Import } from 'lucide-react';
+import Cookies from 'js-cookie';
 import axios from 'axios';
 import SuccessAlert from './SuccessAlert'; // Import SuccessAlert component
 import FailureAlert from './FailureAlert'; // Import FailureAlert component
@@ -77,7 +78,13 @@ const IssueContentAEP = (props) => {
     try {
       const response = await axios.post(
         process.env.REACT_APP_API_URL+'/admin/AEP/',
-        packet
+        packet,
+        {
+          headers: {
+              "authorization": Cookies.get('accessToken') ? `Bearer ${Cookies.get('accessToken')}` : "",
+              "sessionData": Cookies.get('')
+          }
+      }
       );
 
       if (response.data.success) {
@@ -93,7 +100,7 @@ const IssueContentAEP = (props) => {
     } catch (error) {
       console.error(error);
       setAlertType('failure');
-      setAlertMessage('AEP already exists');
+      setAlertMessage(error.message);
     }
   };
 
