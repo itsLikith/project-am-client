@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { Car, UserRound } from 'lucide-react';
+import { Car, UserRound, Siren } from 'lucide-react';
 
 const EmployeeContentRadio = () => {
   return (
@@ -17,6 +17,12 @@ const EmployeeContentRadio = () => {
           <button className="value">
             <Car />
             AVP
+          </button>
+        </Link>
+        <Link to="/admin/employee/security" className="text-decoration-none">
+          <button className="value">
+            <Siren />
+            Security
           </button>
         </Link>
       </div>

@@ -30,6 +30,10 @@ const AppRoutes = () => {
           path="/admin/employee/avp"
           element={<AdminHome viewContent="employee" employeeView="avp" />}
         />
+        <Route
+          path="/admin/employee/security"
+          element={<AdminHome viewContent="employee" employeeView="security" />}
+        />
 
         {/* Admin Validity Configuration Routes */}
         <Route
