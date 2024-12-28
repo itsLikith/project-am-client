@@ -58,16 +58,16 @@ const RenewContent = () => {
     }
 
     try {
-      const response = await axios.post(backend_url, newPacket,
-        {
-          headers: {
-              "authorization": Cookies.get('accessToken') ? `Bearer ${Cookies.get('accessToken')}` : "",
-              "sessionData": Cookies.get('')
-          }
-      }
-      );
+      const response = await axios.post(backend_url, newPacket, {
+        headers: {
+          authorization: Cookies.get('accessToken')
+            ? `Bearer ${Cookies.get('accessToken')}`
+            : '',
+          sessionData: Cookies.get(''),
+        },
+      });
       console.log(response.data);
-      
+
       if (response.data.success) {
         setAlertType('success');
         setAlertMessage('Renewal successful!');
@@ -77,7 +77,10 @@ const RenewContent = () => {
       }
     } catch (error) {
       console.error('Error submitting form:', error);
-      setAlertMessage('Error occurred: ' + (error.response?.data.message || 'An error occurred'));
+      setAlertMessage(
+        'Error occurred: ' +
+          (error.response?.data.message || 'An error occurred')
+      );
       setAlertType('failure');
     }
   };
@@ -86,14 +89,16 @@ const RenewContent = () => {
     <div className="renew-content">
       {alertType === 'success' && <SuccessAlert message={alertMessage} />}
       {alertType === 'failure' && <FailureAlert message={alertMessage} />}
-      
+
       <select
         name="drop"
         className="form-control mt-3"
         onChange={handleChange}
         value={selected}
       >
-        <option value="" disabled>Select type</option>
+        <option value="" disabled>
+          Select type
+        </option>
         <option value="adp">ADP</option>
         <option value="avp">AVP</option>
         <option value="aep">AEP</option>

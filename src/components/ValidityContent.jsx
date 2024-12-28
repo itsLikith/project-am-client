@@ -18,9 +18,11 @@ const ValidityContent = (props) => {
         process.env.REACT_APP_API_URL + '/users/employees/all',
         {
           headers: {
-            "authorization": Cookies.get('accessToken') ? `Bearer ${Cookies.get('accessToken')}` : "",
-            "sessionData": Cookies.get('')
-          }
+            authorization: Cookies.get('accessToken')
+              ? `Bearer ${Cookies.get('accessToken')}`
+              : '',
+            sessionData: Cookies.get(''),
+          },
         }
       );
       const data = await response.json();
@@ -133,8 +135,8 @@ const ValidityContent = (props) => {
             </div>
           ) : sortedData.length === 0 ? ( // Check if sortedData is empty
             <div className="text-center">
-              <table className='table'>
-              <td>No data available Try logging again </td>
+              <table className="table">
+                <td>No data available Try logging again </td>
               </table>
             </div>
           ) : (

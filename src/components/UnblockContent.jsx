@@ -7,7 +7,7 @@ const UnblockContent = () => {
   const [selected, setSelected] = useState('');
   const [ID, setID] = useState('');
   const [error, setError] = useState(null);
-  const[message,setMessage] = useState("");
+  const [message, setMessage] = useState('');
 
   const handleChange = (event) => {
     setSelected(event.target.value);
@@ -37,14 +37,16 @@ const UnblockContent = () => {
     }
 
     try {
-      const response = await axios.get(backend_url,{
+      const response = await axios.get(backend_url, {
         headers: {
-            "authorization": Cookies.get('accessToken') ? `Bearer ${Cookies.get('accessToken')}` : "",
-            "sessionData": Cookies.get('')
-        }
-    });
+          authorization: Cookies.get('accessToken')
+            ? `Bearer ${Cookies.get('accessToken')}`
+            : '',
+          sessionData: Cookies.get(''),
+        },
+      });
       console.log(response.data);
-      if(response.data.success) {
+      if (response.data.success) {
         setMessage(response.data.message);
       } else {
         setMessage(`Failed to unblock ${selected.toUpperCase()}`);
@@ -65,7 +67,7 @@ const UnblockContent = () => {
         value={ID}
         onChange={(e) => setID(e.target.value)}
       />
-      <p className='text-warning text-center mt-2'>{message}</p>
+      <p className="text-warning text-center mt-2">{message}</p>
       <span className="d-flex justify-content-center mt-3">
         <button
           className="btn btn-danger d-flex align-items-center gap-1"

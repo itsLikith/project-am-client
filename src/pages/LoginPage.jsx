@@ -27,7 +27,7 @@ const LoginPage = (props) => {
         password: password,
       };
       const response = await axios.post(
-        process.env.REACT_APP_API_URL+'/users/login',
+        process.env.REACT_APP_API_URL + '/users/login',
         packet
       );
 

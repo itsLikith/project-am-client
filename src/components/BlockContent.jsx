@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 const BlockContent = () => {
   const [selected, setSelected] = useState('');
   const [ID, setID] = useState('');
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
   const [error, setError] = useState(null); // State for error handling
 
   const handleChange = (event) => {
@@ -37,12 +37,14 @@ const BlockContent = () => {
     }
 
     try {
-      const response = await axios.get(backend_url,{
+      const response = await axios.get(backend_url, {
         headers: {
-            "authorization": Cookies.get('accessToken') ? `Bearer ${Cookies.get('accessToken')}` : "",
-            "sessionData": Cookies.get('')
-        }
-    });
+          authorization: Cookies.get('accessToken')
+            ? `Bearer ${Cookies.get('accessToken')}`
+            : '',
+          sessionData: Cookies.get(''),
+        },
+      });
       console.log(response.data);
       if (response.data.success) {
         setMessage(response.data.message);
@@ -81,8 +83,9 @@ const BlockContent = () => {
             value={ID}
             onChange={(e) => setID(e.target.value)}
           />
-          <p className='text-warning text-center mt-2'>{message}</p>
-          {error && <div className="text-danger mt-2">{error}</div>} {/* Display error message */}
+          <p className="text-warning text-center mt-2">{message}</p>
+          {error && <div className="text-danger mt-2">{error}</div>}{' '}
+          {/* Display error message */}
           <span className="d-flex justify-content-center mt-3">
             <button
               className="btn btn-danger d-flex align-items-center gap-1"

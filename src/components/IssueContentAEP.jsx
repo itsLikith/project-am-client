@@ -77,14 +77,16 @@ const IssueContentAEP = (props) => {
 
     try {
       const response = await axios.post(
-        process.env.REACT_APP_API_URL+'/admin/AEP/',
+        process.env.REACT_APP_API_URL + '/admin/AEP/',
         packet,
         {
           headers: {
-              "authorization": Cookies.get('accessToken') ? `Bearer ${Cookies.get('accessToken')}` : "",
-              "sessionData": Cookies.get('')
-          }
-      }
+            authorization: Cookies.get('accessToken')
+              ? `Bearer ${Cookies.get('accessToken')}`
+              : '',
+            sessionData: Cookies.get(''),
+          },
+        }
       );
 
       if (response.data.success) {

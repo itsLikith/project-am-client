@@ -18,12 +18,15 @@ const EmployeeContent = (props) => {
     setError(null); // Reset error state
     try {
       const AllData = await axios.get(
-        `${process.env.REACT_APP_API_URL}/users/employees/all`,{
+        `${process.env.REACT_APP_API_URL}/users/employees/all`,
+        {
           headers: {
-              "authorization": Cookies.get('accessToken') ? `Bearer ${Cookies.get('accessToken')}` : "",
-              "sessionData": Cookies.get('')
-          }
-      }
+            authorization: Cookies.get('accessToken')
+              ? `Bearer ${Cookies.get('accessToken')}`
+              : '',
+            sessionData: Cookies.get(''),
+          },
+        }
       );
       const response = AllData.data;
       if (response.success) {
@@ -76,8 +79,8 @@ const EmployeeContent = (props) => {
 
   // Map ADP statuses and check for expiration
   const adpStatuses = {};
-  aeps.forEach(aep => {
-    aep.ADP.forEach(adp => {
+  aeps.forEach((aep) => {
+    aep.ADP.forEach((adp) => {
       const isAdpExpired = new Date(adp.ADPValidity) < currentDate;
       adpStatuses[adp.ADPId] = isAdpExpired ? 'INACTIVE' : adp.status;
     });
@@ -149,9 +152,12 @@ const EmployeeContent = (props) => {
                     </td>
                     <td>
                       {item.ADPs.length > 0
-                        ? item.ADPs.map(adp => adpStatuses[adp.ADPId] || 'N/A').join(', ')
+                        ? item.ADPs.map(
+                            (adp) => adpStatuses[adp.ADPId] || 'N/A'
+                          ).join(', ')
                         : 'N/A'}
-                    </td> {/* ADP Status */}
+                    </td>{' '}
+                    {/* ADP Status */}
                     <td>{item.AEPStatus}</td> {/* AEP Status */}
                   </tr>
                 ))}

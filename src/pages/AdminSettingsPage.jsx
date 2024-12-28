@@ -9,6 +9,7 @@ import {
   QrCode,
   Circle,
 } from 'lucide-react';
+import ManageEmployee from '../components/ManageEmployee';
 import RenewContent from '../components/RenewContent';
 import BlockContent from '../components/BlockContent';
 import UnblockContent from '../components/UnblockContent';
@@ -42,6 +43,7 @@ const AdminSettings = (props) => {
         <option value="" disabled>
           Select task:
         </option>
+        <option value="manageEmp">Manage Employee</option>
         <option value="authorize">Authorize</option>
         <option value="generateQR">Generate QR</option>
       </select>
@@ -53,6 +55,10 @@ const AdminSettings = (props) => {
         ) : selectedOption === 'authorize' ? (
           <>
             <SettingsRadio selected="authorize" task="renew" />
+          </>
+        ) : selectedOption === 'manageEmp' ? (
+          <>
+            <ManageEmployee />
           </>
         ) : null}
       </p>

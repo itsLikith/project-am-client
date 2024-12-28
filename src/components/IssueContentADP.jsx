@@ -50,13 +50,16 @@ const IssueContentADP = (props) => {
 
     try {
       const response = await axios.post(
-        process.env.REACT_APP_API_URL+'/ADP/',
-        packet,{
+        process.env.REACT_APP_API_URL + '/ADP/',
+        packet,
+        {
           headers: {
-              "authorization": Cookies.get('accessToken') ? `Bearer ${Cookies.get('accessToken')}` : "",
-              "sessionData": Cookies.get('')
-          }
-      }
+            authorization: Cookies.get('accessToken')
+              ? `Bearer ${Cookies.get('accessToken')}`
+              : '',
+            sessionData: Cookies.get(''),
+          },
+        }
       );
       console.log(response.data);
       if (response.data.success) {

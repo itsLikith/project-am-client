@@ -36,9 +36,7 @@ const RecordsContent = () => {
   const fetchLogs = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        process.env.REACT_APP_API_URL+'/log'
-      );
+      const response = await axios.get(process.env.REACT_APP_API_URL + '/log');
       setLogs(response.data.data);
     } catch (error) {
       console.error('Error fetching logs:', error);
@@ -55,7 +53,7 @@ const RecordsContent = () => {
   const filteredLogs = logs.filter((log) => {
     const logEntryTime = new Date(log.entryTime);
     const logExitTime = new Date(log.exitTime);
-    
+
     // Check if log entry time is within the selected date range
     const isWithinDateRange =
       (!startDate || logEntryTime >= new Date(startDate)) &&
@@ -67,10 +65,10 @@ const RecordsContent = () => {
     }
 
     return (
-      isWithinDateRange && (
-        log.EntryId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (log.location && log.location.toLowerCase().includes(searchTerm.toLowerCase()))
-      )
+      isWithinDateRange &&
+      (log.EntryId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (log.location &&
+          log.location.toLowerCase().includes(searchTerm.toLowerCase())))
     );
   });
 
