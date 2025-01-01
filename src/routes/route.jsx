@@ -3,7 +3,6 @@ import LoginPage from '../pages/LoginPage';
 import HomePage from '../pages/SecurityHomePage';
 import AdminHome from '../pages/AdminHome';
 import AdminSettings from '../pages/AdminSettingsPage';
-import MyComponent from '../pages/DeveloperPage';
 import DevPage from '../pages/DevPage';
 
 const AppRoutes = () => {
