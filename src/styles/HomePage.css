@@ -2,6 +2,17 @@
   display: grid;
   grid-template-rows: 7fr 3fr; /* 7 parts for status-container, 3 parts for action-box */
   height: 100vh; /* Adjust height as needed */
+  overflow: scroll; /* Hides the scrollbar */
+}
+
+/* Additional styles for webkit browsers */
+.home-page::-webkit-scrollbar {
+  display: none; /* Hides scrollbar for WebKit-based browsers */
+}
+
+/* For Firefox */
+.home-page {
+  scrollbar-width: none; /* Hides scrollbar for Firefox */
 }
 
 .status-container {

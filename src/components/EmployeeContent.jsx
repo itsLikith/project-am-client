@@ -141,44 +141,44 @@ const EmployeeContent = (props) => {
             <div className="text-danger text-center">{error}</div> // Display error message
           ) : (
             <>
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>Employee Name</th>
-                      <th>AEP ID</th>
-                      <th>ADP IDs</th>
-                      <th>ADP Status</th>
-                      <th>AEP Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredAEPs.length > 0 ? (
-                      filteredAEPs.map((item) => (
-                        <tr key={item.AEPId}>
-                          <td>{item.employeeName}</td>
-                          <td>{item.AEPId}</td>
-                          <td>
-                            {item.ADPs.length > 0
-                              ? item.ADPs.map((adp) => adp.ADPId).join(', ')
-                              : 'N/A'}
-                          </td>
-                          <td>
-                            {item.ADPs.length > 0
-                              ? item.ADPs.map(
-                                  (adp) => adpStatuses[adp.ADPId] || 'N/A'
-                                ).join(', ')
-                              : 'N/A'}
-                          </td>
-                          <td>{item.AEPStatus}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="5">No AEP/ADP data available</td>
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Employee Name</th>
+                    <th>AEP ID</th>
+                    <th>ADP IDs</th>
+                    <th>ADP Status</th>
+                    <th>AEP Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredAEPs.length > 0 ? (
+                    filteredAEPs.map((item) => (
+                      <tr key={item.AEPId}>
+                        <td>{item.employeeName}</td>
+                        <td>{item.AEPId}</td>
+                        <td>
+                          {item.ADPs.length > 0
+                            ? item.ADPs.map((adp) => adp.ADPId).join(', ')
+                            : 'N/A'}
+                        </td>
+                        <td>
+                          {item.ADPs.length > 0
+                            ? item.ADPs.map(
+                                (adp) => adpStatuses[adp.ADPId] || 'N/A'
+                              ).join(', ')
+                            : 'N/A'}
+                        </td>
+                        <td>{item.AEPStatus}</td>
                       </tr>
-                    )}
-                  </tbody>
-                </table>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="5">No AEP/ADP data available</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </>
           )}
         </>
