@@ -1,7 +1,8 @@
-import { Search, LibraryBig } from 'lucide-react';
+import { Search, LibraryBig, Download } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
+import * as XLSX from 'xlsx';
 
 // Styled components
 const RecordsContainer = styled.div`
@@ -49,28 +50,47 @@ const RecordsContent = () => {
     fetchLogs();
   }, []);
 
-  // Filter logs based on entry time and search term
-  const filteredLogs = logs.filter((log) => {
-    const logEntryTime = new Date(log.entryTime);
-    const logExitTime = new Date(log.exitTime);
+  // Function to apply filters based on date range and search term
+  const applyFilters = () => {
+    // First filter by date range
+    const dateFilteredLogs = logs.filter((log) => {
+      const logEntryTime = new Date(log.entryTime);
+      const isWithinDateRange =
+        (!startDate || logEntryTime >= new Date(startDate)) &&
+        (!endDate || logEntryTime <= new Date(endDate));
 
-    // Check if log entry time is within the selected date range
-    const isWithinDateRange =
-      (!startDate || logEntryTime >= new Date(startDate)) &&
-      (!endDate || logEntryTime <= new Date(endDate));
-
-    // Show all logs if searchTerm is empty
-    if (!searchTerm) {
       return isWithinDateRange;
-    }
+    });
 
-    return (
-      isWithinDateRange &&
-      (log.EntryId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (log.location &&
-          log.location.toLowerCase().includes(searchTerm.toLowerCase())))
-    );
-  });
+    // Then filter by search term
+    return dateFilteredLogs.filter((log) => {
+      if (!searchTerm) return true; // If no search term, include all from date filter
+
+      return (
+        log.EntryId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (log.location && log.location.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+    });
+  };
+
+  // Update the filteredLogs variable
+  const filteredLogs = applyFilters();
+
+  // Function to download logs as Excel
+  const downloadLogs = () => {
+    const ws = XLSX.utils.json_to_sheet(filteredLogs.map(log => ({
+      'Validated ID': log.validatedId || 'N/A',
+      'Log ID': log.EntryId || 'N/A',
+      'Location': log.location || 'N/A',
+      'Entry Time': new Date(log.entryTime).toLocaleString() || 'N/A',
+      'Exit Time': new Date(log.exitTime).toLocaleString() || 'N/A'
+    })));
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Logs');
+
+    XLSX.writeFile(wb, 'logs.xlsx'); // This will generate an .xlsx file
+  };
 
   return (
     <RecordsContainer>
@@ -143,6 +163,11 @@ const RecordsContent = () => {
           </tbody>
         </table>
       )}
+      <p className="d-flex justify-content-end">
+        <button className="btn btn-success" onClick={downloadLogs}>
+          Download <Download size={20} />
+        </button>
+      </p>
     </RecordsContainer>
   );
 };
