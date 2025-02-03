@@ -81,6 +81,7 @@ const RecordsContent = () => {
     const ws = XLSX.utils.json_to_sheet(filteredLogs.map(log => ({
       'Validated ID': log.validatedId || 'N/A',
       'Log ID': log.EntryId || 'N/A',
+      'Name': log.name || 'N/A',
       'Location': log.location || 'N/A',
       'Entry Time': new Date(log.entryTime).toLocaleString() || 'N/A',
       'Exit Time': new Date(log.exitTime).toLocaleString() || 'N/A'
@@ -129,7 +130,7 @@ const RecordsContent = () => {
           className="form-control"
           placeholder="Search Validated ID, Log ID, or Location"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => setSearchTerm(e.target.value)} 
         />
       </span>
 
@@ -145,6 +146,7 @@ const RecordsContent = () => {
             <tr>
               <th>Validated ID</th>
               <th>Log ID</th>
+              <th>Name</th>
               <th>Location</th>
               <th>Entry Time</th>
               <th>Exit Time</th>
@@ -155,6 +157,7 @@ const RecordsContent = () => {
               <tr key={log._id}>
                 <td>{log.validatedId || 'N/A'}</td>
                 <td>{log.EntryId || 'N/A'}</td>
+                <td>{log.name}</td>
                 <td>{log.location || 'N/A'}</td>
                 <td>{new Date(log.entryTime).toLocaleString() || 'N/A'}</td>
                 <td>{new Date(log.exitTime).toLocaleString() || 'N/A'}</td>

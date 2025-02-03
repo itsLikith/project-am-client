@@ -36,7 +36,7 @@ const IssueContentADP = (props) => {
       ADPValidity: formData.aepexpirydate,
       DateofIssue: formData.aeprenewaldate,
       AuthorizedBy: formData.authorizedBy,
-      Name: 'Mayank',
+      Name: 'Dummy',
       Designation: 'CTO',
       Organization: 'AAI',
       Violation: ['Init'],
