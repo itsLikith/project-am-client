@@ -48,6 +48,15 @@ const RecordsContent = () => {
 
   useEffect(() => {
     fetchLogs();
+    const today = new Date();
+    const startDate = today.toISOString().split('T')[0]; // Start date is today
+
+    const endDate = new Date(today);
+    endDate.setDate(today.getDate() + 1); // Add one day
+    const formattedEndDate = endDate.toISOString().split('T')[0]; // Format end date
+
+    setStartDate(startDate);
+    setEndDate(formattedEndDate);
   }, []);
 
   // Function to apply filters based on date range and search term
@@ -68,7 +77,8 @@ const RecordsContent = () => {
 
       return (
         log.EntryId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (log.location && log.location.toLowerCase().includes(searchTerm.toLowerCase()))
+        (log.location &&
+          log.location.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     });
   };
@@ -78,14 +88,16 @@ const RecordsContent = () => {
 
   // Function to download logs as Excel
   const downloadLogs = () => {
-    const ws = XLSX.utils.json_to_sheet(filteredLogs.map(log => ({
-      'Validated ID': log.validatedId || 'N/A',
-      'Log ID': log.EntryId || 'N/A',
-      'Name': log.name || 'N/A',
-      'Location': log.location || 'N/A',
-      'Entry Time': new Date(log.entryTime).toLocaleString() || 'N/A',
-      'Exit Time': new Date(log.exitTime).toLocaleString() || 'N/A'
-    })));
+    const ws = XLSX.utils.json_to_sheet(
+      filteredLogs.map((log) => ({
+        'Validated ID': log.validatedId || 'N/A',
+        'Log ID': log.EntryId || 'N/A',
+        Name: log.name || 'N/A',
+        Location: log.location || 'N/A',
+        'Entry Time': new Date(log.entryTime).toLocaleString() || 'N/A',
+        'Exit Time': new Date(log.exitTime).toLocaleString() || 'N/A',
+      }))
+    );
 
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Logs');
@@ -130,7 +142,7 @@ const RecordsContent = () => {
           className="form-control"
           placeholder="Search Validated ID, Log ID, or Location"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)} 
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </span>
 
